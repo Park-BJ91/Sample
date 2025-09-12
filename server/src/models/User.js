@@ -1,9 +1,9 @@
 import { DataTypes, Op } from 'sequelize';
-import sequelize from '../config/db.js';
+import mariadbSequelize from '../config/mariadb.js';
 import bcrypt from 'bcrypt';
 
 
-const User = sequelize.define("users", {
+const User = mariadbSequelize.define("users", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     username: { type: DataTypes.STRING, unique: false, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
@@ -14,7 +14,7 @@ const User = sequelize.define("users", {
 });
 
 
-export const userFindAll = async () => {
+export const findUserAll = async () => {
     return await User.findAll();
 }
 

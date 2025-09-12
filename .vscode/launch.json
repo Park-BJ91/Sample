@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CwmsApplication<cwms>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ktnc.cwms.CwmsApplication",
+            "projectName": "cwms",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

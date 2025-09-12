@@ -1,0 +1,13 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive"
+},
+{
+    // 파일 이름 변경, 이동 시 import 경로 자동 수정
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    // JS/TS 모두 적용되도록
+    "javascript.updateImportsOnFileMove.enabled": "always", // VSCode 기본값은 'prompt 변경할떄마다 물어봄'
+    // 자동 import 시 확장자까지 붙이도록 설정 (ESM + Vite 호환)
+    "javascript.preferences.importModuleSpecifierEnding": "auto", // auto: 필요시 확장자 붙임, minimal: 확장자 안붙임, index: index 파일이면 확장자 안붙임
+    "typescript.preferences.importModuleSpecifierEnding": "auto",
+}

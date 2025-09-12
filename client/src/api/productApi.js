@@ -1,20 +1,39 @@
 import axios from "axios";
 
 const API = process.env.REACT_APP_SERVER_PRODUCT_API || '/api/product';
+const token = localStorage.getItem('token');
 
-export const getProducts = () => {
-
-
-    alert(localStorage.getItem('token'));
-
-    return axios.get(
-        API,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-    );
+export const getProducts = async () => {
+    try {
+        const response = await axios.get(
+            API,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response;
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+        throw error;
+    }
 };
-export const getProductsSearch = (query) => axios.get(`${API}/search?filter=${query}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-});
-export const createProduct = (data) => axios.post(API, data, {
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-});
+export const getProductsSearch = async (query) => {
+    try {
+        const response = await axios.get(`${API}/search?filter=${query}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response;
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+        throw error;
+    }
+};
+export const createProduct = async (data) => {
+    try {
+        const response = await axios.post(API, data, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response;
+    } catch (error) {
+        console.error("Failed to create product:", error);
+        throw error;
+    }
+};
