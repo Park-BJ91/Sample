@@ -2,16 +2,16 @@ import bcrypt from 'bcrypt';
 import { findUserByUsername, createUser, findUserAll } from '../models/User.js';
 
 export async function join(req, res) {
-    const { reqId, pwd } = req.body;
+    const { reqId, email, pwd } = req.body;
     // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(pwd, 10);
 
     try {
-        const existingUser = await findUserByUsername({ where: { username: reqId } });
+        const existingUser = await findUserByUsername(reqId);
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
-        await createUser(reqId, hashedPassword);
+        await createUser(reqId, email, hashedPassword);
 
         return res.status(201).json({ message: 'User registered' });
     } catch (error) {

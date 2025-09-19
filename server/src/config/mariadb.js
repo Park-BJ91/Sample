@@ -1,10 +1,10 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
-dotenv.config();    // .env 파일의 환경변수를 process.env에 넣어줌
+dotenv.config();
 
 
-export const mariadbSequelize = new Sequelize( // MariaDB 연결 설정
+export const mariadbSequelize = new Sequelize(
     process.env.MARIADB_DB_NAME,
     process.env.MARIADB_USER,
     process.env.MARIADB_PASSWORD,

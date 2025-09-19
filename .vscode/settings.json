@@ -1,8 +1,6 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive"
-},
-{
+    "java.configuration.updateBuildConfiguration": "interactive",
     // 파일 이름 변경, 이동 시 import 경로 자동 수정
     "typescript.updateImportsOnFileMove.enabled": "always",
     // JS/TS 모두 적용되도록

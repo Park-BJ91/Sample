@@ -1,29 +1,28 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet, useSearchParams } from 'react-router-dom';
+import MainSearch from '@pages/tour/search/MainSearch';
+import { regionsList } from '@api/tour/tourApi';
+
 
 export default function HomePage() {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        // Perform logout logic here
-        navigate('/login'); // Redirect to login page
-    };
+    const handleRegion = async () => {
+        return await regionsList();
+    }
 
-    const handleProduct = () => {
-        navigate('/products'); // Redirect to product page
+    const handleSearch = async (params) => {
+        const queryString = new URLSearchParams({
+            sidoCode: params.sidoCode ? params.sidoCode : '',
+            signguCode: params.signguCode ? params.signguCode : '',
+        }).toString();
+        navigate(`/tour/search?${queryString}`);
     }
 
     return (
         <div>
-            <h1>Home Page</h1>
-            <p>Welcome to the home page!</p>
-            <div>
-                <p>
-                    <button onClick={handleLogout}>login</button>
-                </p>
-                <p>
-                    <button onClick={handleProduct}>Product</button>
-                </p>
-            </div>
+            {/* Search 최상단 */}
+            <MainSearch fetchRegions={handleRegion} onSearch={handleSearch} />
+            <Outlet />
         </div>
     );
 }

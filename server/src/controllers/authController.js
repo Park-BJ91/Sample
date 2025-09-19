@@ -16,11 +16,7 @@ export const localLogin = (req, res) => {
 
 export const naverLoginCallback = (req, res) => {
     const naverToken = req.user.token;
-
     console.log("########## Naver Login Callback :: ", naverToken);
-
-
-    // setCookie(res, naverToken); // 쿠키 설정
     res.redirect(`${CLIENT_URL}/login/success?result=success`);
 };
 
