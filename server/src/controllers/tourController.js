@@ -34,7 +34,6 @@ export const regionTour = async (req, res) => {
         return res.json(cached.data);
     }
     const query = req.query;
-    console.log("컨트롤 서버 지역 관광 검색 쿼리 ", query);
     const result = await TourService.regionTourService(query);
     tourCache.set(CACHE_KEY, {
         data: result,

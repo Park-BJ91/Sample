@@ -1,4 +1,4 @@
-import tourApi from './tourIntcp.js';
+import { tourApi } from './pubAPIInterceptors.js';
 
 /** 지역 코드 전체 */
 export async function citiesAll() {
@@ -17,6 +17,11 @@ export async function tourDetailCommon(id) {
     return data.response.body.items.item;
 };
 
+export async function tourDetailIntro(id, contentTypeId) {
+    const { data } = await tourApi.get(`/detailIntro?contentId=${id}&contentTypeId=${contentTypeId}`);
+    return data.response.body.items.item;
+}
+
 export async function tourDetailInfo(id, contentTypeId) {
     const { data } = await tourApi.get(`/detailInfo?contentId=${id}&contentTypeId=${contentTypeId}`);
     return data.response.body.items.item;
@@ -26,5 +31,6 @@ export default {
     citiesAll,
     regionTour,
     tourDetailCommon,
+    tourDetailIntro,
     tourDetailInfo,
 };

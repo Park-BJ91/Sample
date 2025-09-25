@@ -1,49 +1,48 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '@contexts/AuthContext';
+import { userLoginAPI } from '@api/auth/authApi';
 import axios from 'axios';
 import naverLogo from '../../assets/login/n_black_bar.png';
-import axiosInstance from '@api/axiosInstance';
 
-// axios.defaults.withCredentials = true; // 쿠키 포함 요청
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(''); // 실패 메시지
+
+    const { setIsLogin } = useAuth();
+
     const navigate = useNavigate();
 
-    const PATH = import.meta.env.VITE_SERVER_AUTH_API;
+    const PATH = import.meta.env.VITE_SERVER_AUTH_API; ``
 
     const handleLocalLogin = async ({ id, pw }) => {
         try {
-            const response = await axios.post(`${PATH}/local/login`, {
-                reqId: id,
-                pwd: pw
-            });
-
+            const response = await userLoginAPI({ reqId: id, pwd: pw });
             if (response.data?.result === 'SUCCESS') {
                 setError('');
+                setIsLogin(true);
                 navigate('/'); // 로그인 성공 후 홈 이동
             } else {
                 setError(response.data.message || '로그인에 실패했습니다.');
             }
-
-
         } catch (error) {
-            console.log('Login error !@#!@#@!#@!:', error.response ? error.response.data : error.message);
-            setError(error.response?.data?.message || '로그인 실패');
+            setError(error.response.data.message || '로그인에 실패했습니다.');
+            throw error;
         }
-
     };
 
+    /* 회원 가입 핸들러 */
+    const handleSignup = async () => {
+        await navigate('/signup');
+    }
 
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
                 <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-
-
 
                 <div className="flex flex-row items-center gap-4 mb-4">
                     <div className="flex flex-col flex-1 gap-2">
@@ -69,6 +68,10 @@ export default function LoginPage() {
                     >
                         Login
                     </button>
+                </div>
+
+                <div className="flex flex-col items-start text-sm my-6">
+                    <span className="text-gray-500" onClick={handleSignup}>회원 가입</span>
                 </div>
 
                 {error && (

@@ -8,16 +8,15 @@ export default function TourDetailMap(props) {
         console.log("Map Component Props:", props);
         // 좌표가 props로 전달되었는지 확인
         if (props.coordinate && window.naver) {
+            // lat: 위도 Y, lng: 경도 X
             const [lat, lng] = props.coordinate.split(',').map(Number);
             console.log("Parsed Coordinates:", lat, lng);
 
             const mapOptions = { // 지도 옵션 설정
-                center: new naver.maps.LatLng(lat, lng), // 중심 좌표 (경도, 위도)
+                center: new naver.maps.LatLng(lat, lng), // 중심 좌표 (위도, 경도)
                 zoom: 15,
             };
-
             const map = new naver.maps.Map(mapRef.current, mapOptions); // 지도 생성
-
             // 마커 추가
             new naver.maps.Marker({
                 position: new naver.maps.LatLng(lat, lng),

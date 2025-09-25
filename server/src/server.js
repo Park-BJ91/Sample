@@ -10,6 +10,7 @@ import ProductRoutes from "./routes/productRoutes.js";
 import UserRoutes from "./routes/userRoutes.js";
 import AuthRoutes from "./routes/authRoutes.js";
 import TourRoutes from "./routes/tourRoutes.js";
+import FavoiriteRoutes from "./routes/favoriteRoutes.js";
 
 import { startUpdateRegionsCron } from './cron/updateJon.js';
 
@@ -21,6 +22,8 @@ const USER_PATH = process.env.USER_PATH || '/api/user';
 const AUTH_PATH = process.env.AUTH_PATH || '/api/auth';
 const PRODUCT_PATH = process.env.PRODUCT_PATH || '/api/product';
 const TOUR_PATH = process.env.TOUR_PATH || '/api/tour';
+const FAVORITE_PATH = '/api/favorite';
+const WEATHER_PATH = process.env.WEATHER_PATH || '/api/weather';
 
 // 지역 정보 업데이트 스케줄러
 startUpdateRegionsCron();
@@ -35,8 +38,7 @@ app.use(AUTH_PATH, AuthRoutes);
 app.use(PRODUCT_PATH, ProductRoutes);
 app.use(USER_PATH, UserRoutes);
 app.use(TOUR_PATH, TourRoutes);
-
-
+app.use(FAVORITE_PATH, FavoiriteRoutes);
 
 // TEST SERVER 
 /*

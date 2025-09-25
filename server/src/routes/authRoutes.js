@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { join } from '../controllers/userController.js';
-import { verifyTokenOnly, localAuth, naverAuthCallback, verifyCookieToken } from '../middlewares/authMiddleware.js'; // 토큰 검증 미들웨어
+import { localAuth, naverAuthCallback, verifyCookieToken } from '../middlewares/authMiddleware.js'; // 토큰 검증 미들웨어
 import { AUTH_TOKEN_RESULT } from '../constants/authResult.js'; // 토큰 결과 상수
 import { setCookie, clearCookie } from '../utils/cookie.js';
 import { naverDeleteService } from '../services/authDeleteService.js';
@@ -15,18 +14,22 @@ const CLIENT_PATH = process.env.CLIENT_URL || 'http://localhost:3000';
 const router = Router();
 
 // 명칭 변경해야함 
-router.get('/verifyToken', verifyCookieToken, (req, res) => {
+router.get('/verifyCookie', verifyCookieToken, (req, res) => {
     res.json({ result: AUTH_TOKEN_RESULT.TOKEN_SUCCESS, message: '토큰인증 성공' });
 });
 
 
-// Local 회원가입 및 로그인 라우트
-router.post('/join', join);
-
+// Local 로그인 라우트
 router.post('/local/login', localAuth, AuthController.localLogin);
 router.get('/fail/login', (req, res) => {
     console.log('로그인 실패 ################################');
     res.redirect(`${CLIENT_PATH}/login/fail?error=fail`);
+});
+
+router.get('/logout', (req, res) => {
+    clearCookie(res);
+    console.log("####################  Logout Clear Cookie....!!!! ");
+    res.json({ result: 'SUCCESS', message: '로그아웃 성공' });
 });
 
 
@@ -38,16 +41,6 @@ router.get('/naver', passport.authenticate('naver', { session: false }));
 
 
 router.get('/naver/callback', (req, res) => {
-    /* 
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // 운영환경에서는 true
-        sameSite: 'none', // 크로스 사이트 허용
-        maxAge: process.env.COOKIE_EXPIRES_IN || 180000
-    });
-    */
-
-
     passport.authenticate('naver', { session: false, failureRedirect: '/fail/login' }, (err, user, info) => {
         if (err || !user) {
             return next(err);

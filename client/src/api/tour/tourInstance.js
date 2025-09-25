@@ -1,10 +1,8 @@
 import axios from "axios";
 
 
-const API_BASE_URL = "http://localhost:4000/api/tour"; // Replace with your backend URL
-
 export const tourApi = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: import.meta.env.VITE_SERVER_TOUR_API,
     headers: {
         "Content-Type": "application/json",
     },

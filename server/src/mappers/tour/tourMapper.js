@@ -31,10 +31,6 @@ export const TOUR_SIGUNGU_CODE_MAP = {
     themaCd: 'wellnessThemaCd' // 웰니스 테마 코드 (EX050100: 온천 / 사우나 / 스파, EX050200: 찜질방, EX050300: 한방 체험, EX050400: 힐링 명상, EX050500: 뷰티 스파, EX050600: 기타 웰니스, EX050700: 자연 치유)
 };
 
-export const TOUR_REGION_DB_TO_CLIENT_MAP = {
-    testCode: 'sidoCode'
-}
-
 /** 쿼리 키 맵핑 (mapping 키를 mapping value로 변경) */
 export const mapTourParams = async (params, mapping) => {
     const mappedParams = {};

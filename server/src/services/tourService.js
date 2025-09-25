@@ -1,9 +1,14 @@
 import { Op, QueryTypes } from 'sequelize';
 import { Signgu, Sido } from '../models/Regions.js';
 import TourApi from '../api/tourAPI.js';
-import NaverMapApi from '../api/naverAPI.js';
-import { mapTourParams, TOUR_REGION_CODE_MAP, TOUR_REGION_DB_TO_CLIENT_MAP } from '../mappers/tour/tourMapper.js';
+import weatherAPI from '../api/weatherAPI.js';
+import { mapTourParams, TOUR_REGION_CODE_MAP } from '../mappers/tour/tourMapper.js';
 import mariadbSequelize from '../config/mariadb.js';
+
+import dfsXyConv from '../utils/dfs_xy_conv.js';
+import baseDateTime from '../utils/baseDateTime.js';
+
+
 
 
 export const regionsSearchAllService = async () => {
@@ -145,20 +150,91 @@ export const updateRegions = async () => {
         } */
 }
 
+
 export const tourDetailService = async (id, contentTypeId) => {
 
-    console.log("🚀 ~ tourDetailService ~ id, contentTypeId:", id, contentTypeId);
     // id와 contentTypeId를 사용하여 API에서 상세 정보 가져오기
     const detailCommon = await TourApi.tourDetailCommon(id);
-    console.log("🚀 ~ tourDetailService ~ detailCommon:", detailCommon)
 
     const { mapX, mapY, ...rest } = detailCommon[0];
-    const mapCoords = mapY && mapX ? [mapY, mapX].join(',') : null;
+    const mapCoords = mapY && mapX ? [mapY, mapX].join(',') : null; // naver map용 "위도,경도" 문자열
+
+    // 위경도 → 기상청 격자 좌표 변환
+    const { nx, ny } = await dfsXyConv("toXY", mapY, mapX); // v1: 위도, v2: 경도
+    const { baseDate, baseTime } = await baseDateTime(1);
+
+    /* weatherShortRest 사용자 로그인 즐겨찾기 등 상세 페이지에 사용으로 변경 예정 */
+    /*     const weatherShortRest = {
+            result: true,
+            temp: null,
+            humidity: null,
+            precipitationType: null,
+            windSpeed: null,
+            rain1h: null,
+        };
+    
+        const weatherParams = {
+            base_date: baseDate, // '20231005', // baseDate, // '20231005', // YYYYMMDD
+            base_time: baseTime, // '1400', // baseTime, // '1400', // HHMM
+            nx, // 60, // 격자 X 좌표
+            ny  // 127 // 격자 Y 좌표
+        };
+    
+        const shortWeather = await weatherAPI.getUltraShortTermWeather(weatherParams);
+        const shortWeatherResult = shortWeather ? shortWeather : { result: false };
+    
+        if (shortWeather) {
+            shortWeatherResult.map(item => {
+                if (item.category === "T1H") {
+                    weatherShortRest.temp = (item.obsrValue + "°C").trim(); // 현재 기온
+                } else if (item.category === "REH") {
+                    weatherShortRest.humidity = (item.obsrValue + "%").trim(); // 습도
+                } else if (item.category === "PTY") { // 강수 형태
+                    weatherShortRest.precipitationType = item.obsrValue; // 0: 없음, 1: 비, 2: 비/눈, 3: 눈, 4: 소나기, 5: 빗방울, 6: 빗방울/눈날림, 7: 눈날림
+                } else if (item.category === "WSD") {
+                    weatherShortRest.windSpeed = (item.obsrValue + "m/s").trim(); // 풍속
+                } else if (item.category === "RN1") {
+                    weatherShortRest.rain1h = (item.obsrValue + "mm").trim(); // 1시간 강수량
+                }
+                return item;
+            });
+        } */
+
+    // console.log("🚀 ~ tourDetailService ~ weatherRest:", weatherShortRest)
+
+    // weatherShortRest END
+
+
+    // weatherMidRest 중기예보는 상세페이지에서 사용 안함 (필요시 구현)
+    const weatherRest = {
+        result: false
+    };
+
+    const weatherParams = {
+        base_date: baseDate, // '20231005', // baseDate, // '20231005', // YYYYMMDD
+        base_time: baseTime, // '1400', // baseTime, // '1400', // HHMM
+        nx, // 60, // 격자 X 좌표
+        ny  // 127 // 격자 Y 좌표
+    };
+
+    let shortTermWeather = null;
+
+    // 단기예보
+    try {
+        // shortTermWeather = await weatherAPI.getShortTermForecastWeather(weatherParams);
+    } catch (error) {
+        console.error("단기예보 조회 실패:", error);
+    }
+
+    const detailIntro = await TourApi.tourDetailIntro(id, contentTypeId);
+    const detailResultIntro = detailIntro[0] ? detailIntro[0] : null;
 
     const detailInfo = await TourApi.tourDetailInfo(id, contentTypeId);
+    const detailResultInfo = detailInfo ? detailInfo : null;
 
 
-    return { success: true, detailCommon: rest, detailInfo, coordinate: mapCoords };
+    // return { success: true, detailCommon: rest, detailInfo: detailResultInfo, coordinate: mapCoords, weather: weatherRest };
+    return { success: true, detailCommon: rest, detailInfo: detailResultInfo, detailIntro: detailResultIntro, coordinate: mapCoords, weather: shortTermWeather };
 };
 
 export default {

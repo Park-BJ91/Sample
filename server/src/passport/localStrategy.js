@@ -15,7 +15,6 @@ passport.use(new LocalStrategy(
     async (username, password, done) => { // 검증 콜백
         try {
             const data = await findUserByUsername(username);
-            console.log("INFO " + JSON.stringify(data));
             if (!data) {
                 return done(null, false, { message: '존재하지 않는 사용자입니다.' });
             }
@@ -25,7 +24,7 @@ passport.use(new LocalStrategy(
             if (!isValid) {
                 return done(null, false, { message: '비밀번호가 올바르지 않습니다.' });
             }
-
+            console.log("!!!!!!!!! LocalStrategy Passport Success:");
             const token = jwt.sign( // JWT 생성
                 { id: data.id, role: data.role },
                 process.env.JWT_SECRET,

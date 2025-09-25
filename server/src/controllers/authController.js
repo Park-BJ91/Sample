@@ -8,10 +8,9 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
 
 export const localLogin = (req, res) => {
-    console.log("@@@@@@@@@@ AuthController LocalLogin....");
-    const token = generateToken(req.user); // JWT 생성
-    setCookie(res, token); // 쿠키 설정
-    res.json({ result: AUTH_LOGIN_RESULT.SUCCESS, message: '로그인 성공', user: req.user, token: token });
+    // JWT 생성은 미들웨어에서 처리 했음
+    setCookie(res, req.authInfo.token); // 쿠키 설정
+    res.json({ result: AUTH_LOGIN_RESULT.SUCCESS, message: '로그인 성공' });
 };
 
 export const naverLoginCallback = (req, res) => {

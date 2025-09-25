@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = process.env.REACT_APP_SERVER_PRODUCT_API || '/api/product';
+const API = process.env.VITE_SERVER_PRODUCT_API;
 const token = localStorage.getItem('token');
 
 export const getProducts = async () => {

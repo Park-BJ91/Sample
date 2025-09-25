@@ -13,17 +13,14 @@ export default function SearchContent() {
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        console.log("search Params:", searchParams);
         const sidoCode = searchParams.get('sidoCode');
         const signguCode = searchParams.get('signguCode');
 
         (async () => {
             try {
-                // const { data } = await tourApi.get(`/festivals?sidoCode=${sidoCode}&signguCode=${signguCode}`);
                 const { data } = await toursList({ sidoCode, signguCode });
                 if (data.success) {
                     let results = data.list;
-                    console.log("Fetched festival data:", results);
 
                     setFilteredResults(results);
                     setCurrentPage(1); // 첫 페이지로 이동
@@ -46,7 +43,6 @@ export default function SearchContent() {
         currentPage * PAGE_SIZE // 끝 인덱스
     );
 
-    console.log(totalPages)
     // console.log("Paged Results START:", (currentPage - 1) * PAGE_SIZE);
     // console.log("Paged Results END:", currentPage * PAGE_SIZE);
     // console.log("Paged Results SIZE:", pagedResults.length);
