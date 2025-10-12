@@ -7,7 +7,7 @@ export function startUpdateRegionsCron() {
     try {
         // schedule(크론표현식, 실행할 함수)
         // 크론표현식 () 초 분 시 일 월 요일
-        cron.schedule('0 10 10 * * *', async () => {
+        cron.schedule('0 04 23 * * *', async () => {
             console.log("스케줄러 업데이트 실행");
             // await connectMariaDB() ; // DB 연결 확인
             await updateRegions();

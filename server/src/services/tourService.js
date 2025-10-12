@@ -10,7 +10,7 @@ import baseDateTime from '../utils/baseDateTime.js';
 
 
 
-
+/** 지역 전체 검색 서비스 */
 export const regionsSearchAllService = async () => {
     console.log("서버 지역 전체 검색");
 
@@ -48,6 +48,9 @@ export const regionTourService = async (query) => {
 /** DB에 시도, 구군 정보 업데이트 */
 export const updateRegions = async () => {
     const resRaw = await TourApi.citiesAll(); // 지역 정보 코드 요청
+    console.log("Fetched Regions:", resRaw); // API에서 받아온 원본 데이터 출력
+
+
 
     const grouped = {};
     resRaw.forEach(item => {
@@ -160,7 +163,7 @@ export const tourDetailService = async (id, contentTypeId) => {
     const mapCoords = mapY && mapX ? [mapY, mapX].join(',') : null; // naver map용 "위도,경도" 문자열
 
     // 위경도 → 기상청 격자 좌표 변환
-    const { nx, ny } = await dfsXyConv("toXY", mapY, mapX); // v1: 위도, v2: 경도
+    const { nx, ny } = await dfsXyConv("toXY", mapY, mapX); //y1: 위도, x2: 경도
     const { baseDate, baseTime } = await baseDateTime(1);
 
     /* weatherShortRest 사용자 로그인 즐겨찾기 등 상세 페이지에 사용으로 변경 예정 */

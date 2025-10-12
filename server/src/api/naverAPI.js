@@ -1,9 +1,10 @@
-import { naverMapDynamicApi, naverMapStaticApi } from './naverIntcp.js';
+import createAxios from "./createAxios";
 
 
 export const getDynamicMap = async (pointer) => {
     const coords = [pointer.mapX, pointer.mapY].join(',');
-    const { data } = await naverMapDynamicApi.get(`/maps.js`, {
+    // const { data } = await naverMapDynamicApi.get(`/maps.js`, {
+    const { data } = await createAxios.naverMapDynamicApi.get(`/maps.js`, {
         params: {
             center: coords,
             level: 10,

@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { AuthProvider } from '@contexts/AuthContext';
+import ProtectedRoute from '@components/ProtectedRoute';
+
 
 import HomePage from '@pages/HomePage';
 import TourDetail from '@pages/tour/detail/TourDetail';
@@ -13,6 +15,9 @@ import UserInfoDashBoardPage from '@pages/user/UserInfoDashBoardPage';
 import UserSettingsPage from '@pages/user/UserSettingsPage';
 import FavoriteListPage from '@pages/user/FavoriteListPage';
 import PostListPage from '@pages/user/PostListPage';
+
+import TravelBoardMainPage from '@pages/board/TabelBoardMainPage';
+import TravelBoardWritePage from '@pages/board/TravelBoardWritePage';
 
 import Layout from '@components/Layout';
 
@@ -40,6 +45,18 @@ export default function Main() {
                             <Route path="favorites" element={<FavoriteListPage />} />
                             <Route path="posts" element={<PostListPage />} />
                         </Route>
+
+                        <Route path="/board" element={<TravelBoardMainPage />} />
+                        <Route
+                            path="/board/write"
+                            element={
+                                <ProtectedRoute>
+                                    <TravelBoardWritePage />
+                                </ProtectedRoute>
+                            }
+                        />
+
+
                     </Route>
 
 
@@ -48,19 +65,3 @@ export default function Main() {
         </AuthProvider>
     );
 }
-
-/* 
-    <Route path="/user/delete"
-        element={
-            <ProtectedRoute>
-                <UserDelete />
-            </ProtectedRoute>
-        } />
-
-    <Route path="/dashboard"
-        element={
-            <ProtectedRoute>
-                <DashBoard />
-            </ProtectedRoute>
-        } />
-*/

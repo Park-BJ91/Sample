@@ -30,6 +30,8 @@ export async function signup(req, res) {
             zonecode
         }
 
+        console.log("@@@@@@@@@@@ createdUser:", createdUser);
+
         await createUser(createdUser);
 
         return res.status(201).json({ message: 'User registered' });
@@ -58,6 +60,7 @@ export async function userFindAll(req, res) {
 /** 사용자 ID 검증 */
 export async function verifyId(req, res) {
     const { userId } = req.query;
+    console.log("userId:", userId);
     if (!userId) {
         return res.status(400).json({ result: 400, message: '사용자 ID는 필수입니다.' });
         // 400: Bad Request (잘못된 요청)

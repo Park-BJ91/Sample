@@ -28,7 +28,18 @@ export const findUserAll = async () => {
 }
 
 export const findUserByUsername = async (name) => {
-    return await User.findOne({ where: { userId: name } });
+
+    try {
+        console.log("findUserByUsername name:", name);
+        const user = await User.findOne({ where: { userId: name } });
+        console.log("findUserByUsername user:", user);
+        return user;
+    } catch (error) {
+        console.error("아이디 찾기 에러  error:", error);
+        throw error;
+    }
+
+    // return await User.findOne({ where: { userId: name } });
 }
 
 export const validatePassword = async (inputPassword, storedPassword) => {

@@ -34,6 +34,10 @@ export default defineConfig({
                 target: "http://localhost:4000",
                 changeOrigin: true, // 필요에 따라 설정 (예: CORS 문제 해결)
                 // rewrite: (path) => path.replace(/^\/api/, '') // 필요에 따라 경로 재작성
+            },
+            "/uploads": {
+                target: "http://localhost:4000",
+                changeOrigin: true,
             }
         }
     },

@@ -1,15 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import App from './App';
 import Main from '../src/pages/Main';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    // <React.StrictMode>
-    <div>
-        {/* <FilterableProductTable /> */}
-        {<Main />}
-    </div>
-    //</React.StrictMode>
+    <React.StrictMode>
+        <div>
+            {<Main />}
+        </div>
+    </React.StrictMode>
 );
 

@@ -1,5 +1,6 @@
 import multer from 'multer';
 import fs from 'fs'; // 파일 시스템 모듈
+import path from 'path'; // 경로 모듈
 
 /* 프로필 이미지 업로드 설정 */
 const profilesStorage = multer.diskStorage({
@@ -20,8 +21,7 @@ const profilesStorage = multer.diskStorage({
 /* 게시판 파일 업로드 설정 */
 const boardStorage = multer.diskStorage({
     destination: (req, file, cb) => { // 업로드 디렉토리 설정
-        const boardId = req.body.boardId;
-        const uploadPath = `uploads/boards_${boardId}`;
+        const uploadPath = path.join('uploads', 'temp');
         // 업로드 디렉토리가 없으면 생성
         if (!fs.existsSync(uploadPath)) {
             fs.mkdirSync(uploadPath, { recursive: true });

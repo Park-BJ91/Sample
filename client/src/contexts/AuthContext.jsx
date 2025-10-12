@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
             try {
                 const res = await verifyCookie();
                 if (!mounted) return;
-                console.log("Auth check:", res.data);
                 setIsLogin(res.data?.result === 1);
             } catch (err) {
                 if (!mounted) return;

@@ -1,8 +1,18 @@
 import oracledb from 'oracledb';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+
 
 
 export async function connectOracleDB() {
     try {
+
+        console.log('OracleDB 연결 시도 중...');
+        console.log('ORACLEDB_USER:', process.env.ORACLEDB_USER);
+        console.log('ORACLEDB_CONNECT_STRING:', process.env.ORACLEDB_CONNECT_STRING);
+
         const conn = oracledb.createPool({
             user: process.env.ORACLEDB_USER,
             password: process.env.ORACLEDB_PASSWORD,

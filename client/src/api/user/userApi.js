@@ -1,4 +1,4 @@
-import userAaxios from "@api/user/userInstance.js";
+import { userAaxios } from "@root/config/apiInstance";
 
 
 /** 회원 아이디 중복 검사 */

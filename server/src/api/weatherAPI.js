@@ -1,5 +1,5 @@
-import { weatherShortApi, weatherMidApi } from "./pubAPIInterceptors.js";
-
+import createAxios from "./createAxios.js";
+const { weatherShortApi } = createAxios;
 
 export const getUltraShortTermWeather = async (weatherParams) => {
     try {

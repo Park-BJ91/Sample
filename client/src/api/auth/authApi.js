@@ -1,4 +1,4 @@
-import { authAxios } from "@api/auth/authInstance";
+import { authAxios } from "@root/config/apiInstance";
 
 const AUTH_PATH = import.meta.env.VITE_SERVER_AUTH_API;
 

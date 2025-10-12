@@ -38,8 +38,6 @@ router.get('/logout', (req, res) => {
 // 네이버 로그인
 router.get('/naver', passport.authenticate('naver', { session: false }));
 // router.get('/naver/callback', naverAuthCallback, AuthController.naverLoginCallback);
-
-
 router.get('/naver/callback', (req, res) => {
     passport.authenticate('naver', { session: false, failureRedirect: '/fail/login' }, (err, user, info) => {
         if (err || !user) {
