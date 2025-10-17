@@ -1,8 +1,10 @@
 import { DataTypes } from "sequelize";
-import { mariadbSequelize } from "../config/mariadb.js";
+// import { mariadbSequelize } from "../config/mariadb.js";
+import db from "../config/index.js";
 import { User } from "./User.js";
 
-export const Favorite = mariadbSequelize.define('Favorite', {
+// export const Favorite = mariadbSequelize.define('Favorite', {
+export const Favorite = db.define('Favorite', {
     favId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     userId: { type: DataTypes.INTEGER, allowNull: false },
     contentId: { type: DataTypes.INTEGER, allowNull: false },
@@ -17,13 +19,14 @@ export const Favorite = mariadbSequelize.define('Favorite', {
     freezeTableName: true, // 모델 이름을 테이블 이름으로 사용 (테이블 이름 복수형 변환 방지)
 });
 
-User.hasMany(Favorite, { foreignKey: 'userId', sourceKey: 'id' });
-Favorite.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+// User.hasMany(Favorite, { foreignKey: 'userId', sourceKey: 'id' }); // 1(User) : N(Favorite)
+// Favorite.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' }); // N(Favorite)  : 1(User)
 
 
 /** 즐겨찾기 추가 */
 export const addFavorite = async (favoriteData) => {
-    const t = await mariadbSequelize.transaction();
+    // const t = await mariadbSequelize.transaction();
+    const t = await db.transaction();
     try {
         await Favorite.create(favoriteData, { transaction: t });
         await t.commit();
@@ -57,7 +60,8 @@ export const getFavoritesByUserId = async (userId) => {
 
 /** 즐겨찾기 삭제 */
 export const deleteFavorite = async (userId, favId) => {
-    const t = await mariadbSequelize.transaction();
+    // const t = await mariadbSequelize.transaction();
+    const t = await db.transaction();
     try {
         const result = await Favorite.destroy({ where: { userId, favId }, transaction: t });
         await t.commit();

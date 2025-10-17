@@ -15,6 +15,18 @@ export const boardTempImageUploadAPI = async (imageFile) => {
     }
 };
 
+/** 게시판 임시 이미지 삭제 */
+export const boardTempImageDeleteAPI = async (info) => {
+    console.log("삭제할 이미지 정보 #############:", info);
+    try {
+        const response = await boardAxios.delete('/temp-image', { data: { info } });
+        return response.data; // 삭제된 이미지의 URL 반환
+    } catch (error) {
+        console.error("Error deleting temporary image:", error);
+        throw error;
+    }
+};
+
 /** 게시물 생성 */
 export const createBoardPostAPI = async (postData) => {
     try {
@@ -27,9 +39,9 @@ export const createBoardPostAPI = async (postData) => {
 };
 
 /** 게시물 목록 조회 */
-export const getBoardPostsAPI = async (params) => {
+export const getBoardPostsAPI = async (page) => {
     try {
-        const response = await boardAxios.get('/posts', { params });
+        const response = await boardAxios.get('/main', { params: { page: page, limit: 10 } });
         return response.data; // 게시물 목록 반환
     } catch (error) {
         console.error("Error fetching board posts:", error);

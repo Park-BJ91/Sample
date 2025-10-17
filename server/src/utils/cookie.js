@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+/** 로그인시 쿠키 설정 함수 */
 export const setCookie = (res, token) => {
     res.cookie('token', token, {
         httpOnly: true, // 클라이언트에서 자바스크립트로 접근 불가

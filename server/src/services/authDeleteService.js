@@ -1,6 +1,5 @@
 import axios from "axios";
 import dotenv from 'dotenv';
-import { mariadbSequelize } from '../config/mariadb.js'
 import { AUTH_RESULT } from '../constants/authResult.js';
 import { clearCookie } from "../utils/cookie.js";
 

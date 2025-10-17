@@ -1,9 +1,11 @@
 import { DataTypes, Op } from 'sequelize';
-import mariadbSequelize from '../config/mariadb.js';
+// import mariadbSequelize from '../config/mariadb.js';
+import db from '../config/index.js';
 import bcrypt from 'bcrypt';
 
 
-export const User = mariadbSequelize.define("User", {
+// export const User = mariadbSequelize.define("User", {
+export const User = db.define("User", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     userId: { type: DataTypes.STRING, unique: true, allowNull: false }, // allowNull은 NOT NULL 제약 조건
     password: { type: DataTypes.STRING, allowNull: false },
@@ -28,11 +30,8 @@ export const findUserAll = async () => {
 }
 
 export const findUserByUsername = async (name) => {
-
     try {
-        console.log("findUserByUsername name:", name);
         const user = await User.findOne({ where: { userId: name } });
-        console.log("findUserByUsername user:", user);
         return user;
     } catch (error) {
         console.error("아이디 찾기 에러  error:", error);
@@ -47,7 +46,8 @@ export const validatePassword = async (inputPassword, storedPassword) => {
 }
 
 export const createUser = async (userData) => {
-    const transaction = await mariadbSequelize.transaction();
+    // const transaction = await mariadbSequelize.transaction();
+    const transaction = await db.transaction();
     try {
         await User.create(userData, { transaction });
         await transaction.commit();

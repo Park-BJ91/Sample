@@ -3,14 +3,9 @@ import React, { useState, useEffect, useRef } from "react";
 
 export default function MainSearch({
     fetchRegions,
-    // fetchTypes,
     onSearch
 }) {
 
-    // --- State ---
-    // const [cityQuery, setCityQuery] = useState("");
-    // const [countyQuery, setCountyQuery] = useState("");
-    // const [typeQuery, setTypeQuery] = useState("");
 
     // 검색 결과
     const [cityResults, setCityResults] = useState([]);
@@ -29,22 +24,6 @@ export default function MainSearch({
     // refs for inputs
     const cityRef = useRef(null);
     const countyRef = useRef(null);
-
-
-    // --- Debounce helper ---
-    // function useDebouncedValue(value, delay = 250) {
-    //     const [v, setV] = useState(value);
-    //     useEffect(() => {
-    //         const t = setTimeout(() => setV(value), delay);
-    //         return () => clearTimeout(t);
-    //     }, [value, delay]);
-    //     return v;
-    // }
-
-    // 디바운스는?  (사용자가 입력한 값이 변경된 후, 일정 시간 동안 추가 입력이 없으면 API를 호출)
-    // const debCity = useDebouncedValue(cityQuery, 500);
-    // const debCounty = useDebouncedValue(countyQuery, 200);
-    // const debType = useDebouncedValue(typeQuery, 150);
 
 
     // --- Effect: City search ---
@@ -96,30 +75,6 @@ export default function MainSearch({
         // }, [selectedCity, debCounty, fetchCities]);
     }, [selectedCity, fetchRegions]);
 
-    // --- Effect: Type search ---
-    /*     useEffect(() => {
-            let active = true;
-            (async () => {
-                if (fetchTypes) {
-                    try {
-                        // const res = await fetchTypes(debType);
-                        const res = await fetchTypes();
-                        if (!active) return;
-                        setTypeResults(res || []);
-                    } catch (e) {
-                        console.error(e);
-                        setTypeResults([]);
-                    }
-                } else {
-                    // setTypeResults(MOCK_TYPES.filter(t => t.name.includes(debType) || debType === ""));
-                    setTypeResults(MOCK_TYPES.filter(t => t.name.includes()));
-                }
-            })();
-            return () => (active = false);
-            // }, [debType, fetchTypes]);
-        }, [fetchTypes]); */
-
-
     // 드롭다운 키보드 컨트롤
     function onKeyDownList(e, listType, items) {
         if (activeList !== listType) return;
@@ -148,8 +103,6 @@ export default function MainSearch({
     function selectCity(c) {
         setSelectedCity(c);
         setSelectedCounty(null);
-        // setCityQuery(c.name);
-        // setCountyQuery("");
         setActiveList(null);
         setHighlightIndex(0);
         // 포커스 카운티로 이동
@@ -157,29 +110,15 @@ export default function MainSearch({
     }
     function selectCounty(ct) {
         setSelectedCounty(ct);
-        // setCountyQuery(ct.name);
         setActiveList(null);
         setHighlightIndex(0);
-        // setTimeout(() => typeRef.current?.focus(), 0);
     }
-
-    /*    
-    function selectType(t) {
-            setSelectedType(t);
-            // setTypeQuery(t.name);
-            setActiveList(null);
-            setHighlightIndex(0);
-        }        
-    */
 
 
     function clearAll() {
         setSelectedCity(null);
         setSelectedCounty(null);
         setSelectedType(null);
-        // setCityQuery("");
-        // setCountyQuery("");
-        // setTypeQuery("");
         setCityResults([]);
         setCountyResults([]);
         setTypeResults([]);
@@ -266,35 +205,6 @@ export default function MainSearch({
                     )}
                 </div>
 
-                {/* Type Select */}
-                {/* <div className="md:col-span-1 relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                    <button
-                        type="button"
-                        className="w-full border rounded-lg px-3 py-2 text-left bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                        onClick={() => setActiveList(activeList === 'type' ? null : 'type')}
-                        onKeyDown={(e) => onKeyDownList(e, 'type', typeResults)}
-                    >
-                        {selectedType ? selectedType.name : "타입 선택"}
-                    </button>
-
-                    {activeList === 'type' && typeResults.length > 0 && (
-                        <ul className="absolute z-20 left-0 right-0 mt-2 bg-white border rounded-lg max-h-44 overflow-auto shadow-sm">
-                            {typeResults.map((t, idx) => (
-                                <li
-                                    key={t.id}
-                                    className={`px-3 py-2 cursor-pointer ${idx === highlightIndex ? 'bg-indigo-50' : 'hover:bg-gray-50'}`}
-                                    onMouseDown={(ev) => { ev.preventDefault(); selectType(t); }}
-                                >
-                                    {t.name}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div> */}
-
-
-
                 {/* 검색 / 초기화 버튼 */}
                 <div className="md:col-span-1 flex gap-2">
                     <button
@@ -328,13 +238,6 @@ export default function MainSearch({
                         <button onClick={() => { setSelectedCounty(null); }} aria-label="군구 제거">✕</button>
                     </span>
                 )}
-                {/* {selectedType && (
-                    <span className="inline-flex items-center gap-2 bg-yellow-50 text-yellow-800 px-3 py-1 rounded-full text-sm">
-                        {selectedType.name}
-                        <button onClick={() => { setSelectedType(null); }} aria-label="타입 제거">✕</button>
-                    </span>
-                )} */}
-
             </div>
         </div>
     );

@@ -24,3 +24,64 @@ button {
 button:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+/* 기본 이미지 스타일: 크기 제한과 여백만 제공 (정렬은 클래스가 담당) */
+.ql-editor img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px 0;
+  /* 위아래 여백 */
+}
+
+/* 정렬별 이미지 위치 */
+.ql-editor .ql-align-left {
+  text-align: left;
+}
+
+.ql-editor .ql-align-center {
+  text-align: center;
+}
+
+.ql-editor .ql-align-right {
+  text-align: right;
+}
+
+/* 왼쪽 정렬: float-left로 배치 */
+.ql-editor .ql-align-left img {
+  display: block;
+  float: left;
+  margin: 12px 16px 12px 0;
+  /* 우측에 텍스트와 간격 */
+}
+
+/* 가운데 정렬: 가운데 배치 */
+.ql-editor .ql-align-center img {
+  display: block;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 오른쪽 정렬: float-right로 배치 */
+.ql-editor .ql-align-right img {
+  display: block;
+  float: right;
+  margin: 12px 0 12px 16px;
+  /* 좌측에 텍스트와 간격 */
+}
+
+/* 이미지가 float될 때 다음 블록이 겹치지 않도록 clearfix 처리 */
+.ql-editor p::after,
+.ql-editor h1::after,
+.ql-editor h2::after,
+.ql-editor h3::after,
+.ql-editor h4::after,
+.ql-editor h5::after,
+.ql-editor h6::after,
+.ql-editor .ql-align-left::after,
+.ql-editor .ql-align-right::after {
+  content: "";
+  display: table;
+  clear: both;
+}

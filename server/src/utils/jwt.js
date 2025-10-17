@@ -12,6 +12,7 @@ export const generateToken = (user) => {
     );
 };
 
+// 토큰으로 사용시 사용자 정보 확인
 export const verifyToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);

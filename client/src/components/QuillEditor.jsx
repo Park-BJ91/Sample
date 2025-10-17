@@ -1,110 +1,115 @@
-import { useState, useRef, useCallback, useMemo } from "react";
-import Quill from "quill";
-import ReactQuill from "react-quill";
+import React, { useImperativeHandle, forwardRef, useRef, useMemo, useEffect } from "react";
+import ReactQuill, { Quill } from "react-quill";
 import ImageResize from "@looop/quill-image-resize-module-react";
-import { boardTempImageUploadAPI } from "@/api/board/boardApi";
-
 import "react-quill/dist/quill.snow.css";
-
-
-
 
 Quill.register("modules/imageResize", ImageResize);
 
-
-/** Quill 에디터 컴포넌트 */
-export default function QuillEditor() {
+const QuillEditor = forwardRef(({ onImageUpload, onImageDelete, onImageRestore }, ref) => {
     const quillRef = useRef(null);
-    const [content, setContent] = useState("");
-    const [uploadedImages, setUploadedImages] = useState([]);
-    // [{ id, url }] 형태로 서버 응답 저장
+
+    // 부모에서 getHtml() 가능하게 ref 노출
+    useImperativeHandle(ref, () => ({
+        getHtml: () => quillRef.current?.getEditor().root.innerHTML || "",
+    }));
 
     /** 이미지 업로드 핸들러 */
-    const handleImageUpload = useCallback(() => {
+    const handleImageInsert = async () => {
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "image/*";
-        input.multiple = true;
+        input.multiple = false;
         input.click();
 
         input.onchange = async () => {
-            const files = input.files;
-            if (!files || files.length === 0) return;
+            const file = input.files?.[0];
+            if (!file) return;
 
-            /** 이미지 업로드 */
-            for (const file of files) {
-                const formData = new FormData();
-                formData.append("file", file);
+            const editor = quillRef.current?.getEditor();
+            const range = editor.getSelection(true);
+            const imageUrl = await onImageUpload(file);
+            editor.insertEmbed(range.index, "image", imageUrl); // 이미지 삽입
+            editor.setSelection(range.index + 1); // 커서를 이미지 뒤로 이동
+        };
+    };
 
-                console.log("업로드할 파일:", file);
+    /** 이미지 삭제 감지 */
+    useEffect(() => {
+        const editor = quillRef.current?.getEditor();
+        if (!editor) return;
 
-                const res = await boardTempImageUploadAPI(file);
-                console.log("서버 응답:", res);
+        const handleTextChange = (delta, oldDelta, source) => {
+            if (source !== "user") return;
 
-                const quill = quillRef.current?.getEditor(); // Quill 인스턴스 가져오기
-                const range = quill.getSelection(true); // 현재 커서 위치 가져오기
+            delta.ops.forEach((op) => {
 
-                quill.insertEmbed(range.index, "image", res.url);
-                quill.setSelection(range.index + 1);
+                // 삭제된 블롯(이미지) 감지
+                if (op.delete) {
+                    let index = 0;
+                    oldDelta.ops.forEach((oldOp) => {
+                        const len = typeof oldOp.insert === "string" ? oldOp.insert.length : 1;
+                        const start = index;
+                        const end = index + len;
+                        const overlaps = start < (op.retain || 0) + op.delete && end > (op.retain || 0);
+                        if (
+                            overlaps &&
+                            oldOp.insert &&
+                            typeof oldOp.insert === "object" &&
+                            oldOp.insert.image
+                        ) {
+                            console.log("이미지 삭제 감지:", oldOp.insert.image);
+                            onImageDelete(oldOp.insert.image);
+                        }
+                        index += len;
+                    });
+                }
 
-                setUploadedImages(prev => [...prev, { id: res.id, url: res.url }]);
+                // 이미지 복원 감지
+                if (op.insert && typeof op.insert === "object" && op.insert.image) {
+                    const imageUrl = op.insert.image;
+                    onImageRestore(imageUrl); // 부모에 복원 요청
+                }
 
-            }
-
-
-            // Test용 FileReader 사용 (서버 업로드 대신)
-            // const fileReader = new FileReader();
-            // const file = files[0];
-
-
-            // fileReader.onload = () => {
-            //     const quill = quillRef.current.getEditor();
-            //     const range = quill.getSelection(true);
-            //     const url = fileReader.result;
-
-            //     quill.insertEmbed(range.index, "image", url);
-            //     quill.setSelection(range.index + 1);
-            // };
-            // fileReader.readAsDataURL(file);
-
+            });
         };
 
-    }, []);
+        editor.on("text-change", handleTextChange);
+        return () => editor.off("text-change", handleTextChange);
+    }, [onImageDelete]);
 
-    /** 모듈 */
-    const modules = useMemo(() => ({
-        toolbar: {
-            container: [
-                [{ size: ["small", false, "large", "huge"] }], // 글자 크기
-                ["bold", "italic", "underline", "strike"], // 굵게, 기울임, 밑줄, 취소선
-                [{ color: [] }, { background: [] }], // 글자색, 배경색
-                ["clean"], // 서식 제거
-                [
-                    { list: "ordered" },
-                    { list: "bullet" },
-                    { indent: "-1" },
-                    { indent: "+1" },
-                    { align: [] }
-                ], // 순서 있는 목록, 순서 없는 목록
-                ["link", "image"], // 링크, 이미지
-            ],
-            handlers: {
-                image: handleImageUpload,
+    /** Quill 모듈 설정 */
+    const modules = useMemo(
+        () => ({
+            toolbar: {
+                container: [
+                    [{ size: ["small", false, "large", "huge"] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ color: [] }, { background: [] }],
+                    ["clean"],
+                    [{ align: [] }],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["link", "image"],
+                ],
+                handlers: {
+                    image: handleImageInsert,
+                },
             },
-        },
-        imageResize: {
-            parchment: Quill.import('parchment'),
-            modules: ['Resize', 'DisplaySize', 'Toolbar'],
-        },
-    }), [handleImageUpload]);
+            imageResize: {
+                parchment: Quill.import("parchment"),
+                modules: ["Resize", "DisplaySize"],
+            },
+        }),
+        []
+    );
 
     return (
         <ReactQuill
             ref={quillRef}
-            value={content}
-            onChange={setContent}
+            theme="snow"
             modules={modules}
             style={{ height: "600px" }}
         />
     );
-}
+});
+
+export default QuillEditor;

@@ -13,6 +13,7 @@
     "axios": "^1.11.0",
     "dotenv": "^17.2.2",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "init": "^0.1.2",
     "lucide-react": "^0.544.0",
     "react": "^18.3.1",
     "react-daum-postcode": "^3.2.0",

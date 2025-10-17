@@ -9,13 +9,26 @@ import { uploadBoardFiles } from '../middlewares/multerMiddleware.js';
 dotenv.config();
 
 const router = Router();
-const BOARD_TEMP_IMAGE_PATH = process.env.BOARD_TEMP_IMAGE_PATH || '/path/to/temp/images';
 
+
+// 게시판 메인 페이지 라우트
+router.get('/main', boardController.getBoardPosts);
+
+// 게시물 생성 라우트
+router.post('/posts', verifyCookieToken, boardController.createBoardPost);
+
+
+// 임시 이미지 업로드 및 삭제 라우트
 router.post(
     '/temp-image',
     verifyCookieToken,
     uploadBoardFiles.single('image'),
     boardController.boardTempImageUpload
+);
+router.delete(
+    '/temp-image',
+    verifyCookieToken,
+    boardController.boardTempImageDelete
 );
 
 

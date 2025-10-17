@@ -8,7 +8,6 @@ import passport from "passport";
 import path from "path";
 
 import cors from "cors";
-import ProductRoutes from "./routes/productRoutes.js";
 import UserRoutes from "./routes/userRoutes.js";
 import AuthRoutes from "./routes/authRoutes.js";
 import TourRoutes from "./routes/tourRoutes.js";
@@ -23,7 +22,6 @@ const app = express()
 const PORT = process.env.PORT || 8080;
 const USER_PATH = process.env.USER_PATH || '/api/user';
 const AUTH_PATH = process.env.AUTH_PATH || '/api/auth';
-const PRODUCT_PATH = process.env.PRODUCT_PATH || '/api/product';
 const TOUR_PATH = process.env.TOUR_PATH || '/api/tour';
 const BOARD_PATH = process.env.BOARD_PATH || '/api/board';
 const FAVORITE_PATH = process.env.FAVORITE_PATH || '/api/favorite';
@@ -40,7 +38,6 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // upl
 
 // app.use('/uploads', express.static('uploads')); // uploads 폴더를 정적 파일로 제공
 app.use(AUTH_PATH, AuthRoutes);
-app.use(PRODUCT_PATH, ProductRoutes);
 app.use(USER_PATH, UserRoutes);
 app.use(TOUR_PATH, TourRoutes);
 app.use(FAVORITE_PATH, FavoriteRoutes);

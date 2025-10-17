@@ -9,8 +9,17 @@ const PAGE_SIZE = 9;
 
 export default function SearchContent() {
     const [searchParams] = useSearchParams();
-    const [filteredResults, setFilteredResults] = useState([]);
+    const [filteredResults, setFilteredResults] = useState([]); // 필터링된 결과 저장
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Pagination logic
+    const totalResults = filteredResults.length; // 전체 결과 수
+    const totalPages = Math.ceil(totalResults / PAGE_SIZE); // 전체 페이지 수
+    const pagedResults = filteredResults.slice( // 현재 페이지에 해당하는 결과 slice(start: , end: )
+        (currentPage - 1) * PAGE_SIZE, // 시작 인덱스
+        currentPage * PAGE_SIZE // 끝 인덱스
+    );
+
 
     useEffect(() => {
         const sidoCode = searchParams.get('sidoCode');
@@ -35,17 +44,7 @@ export default function SearchContent() {
         };
     }, [searchParams]);
 
-    // Pagination logic
-    const totalResults = filteredResults.length; // 전체 결과 수
-    const totalPages = Math.ceil(totalResults / PAGE_SIZE); // 전체 페이지 수
-    const pagedResults = filteredResults.slice( // 현재 페이지에 해당하는 결과 slice(start: , end: )
-        (currentPage - 1) * PAGE_SIZE, // 시작 인덱스
-        currentPage * PAGE_SIZE // 끝 인덱스
-    );
 
-    // console.log("Paged Results START:", (currentPage - 1) * PAGE_SIZE);
-    // console.log("Paged Results END:", currentPage * PAGE_SIZE);
-    // console.log("Paged Results SIZE:", pagedResults.length);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);

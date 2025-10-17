@@ -6,7 +6,7 @@ const tourCache = new Map(); // 관광 데이터 캐시
 const tourDetailCache = new Map(); // 관광 상세 데이터 캐시
 const CACHE_TTL = 60 * 60 * 1000;
 
-
+// 전체 지역 코드 조회
 export const regionsCodeAll = async (req, res) => {
     const CACHE_KEY = 'regions_code_all';
 
@@ -25,6 +25,7 @@ export const regionsCodeAll = async (req, res) => {
     res.json(result);
 };
 
+// 지역별 관광지 조회
 export const regionTour = async (req, res) => {
     const CACHE_KEY = `tour_${JSON.stringify(req.query)}`;
 
@@ -42,6 +43,7 @@ export const regionTour = async (req, res) => {
     res.json(result);
 };
 
+// 관광 상세 조회
 export const tourDetail = async (req, res) => {
 
     const { id } = req.params;
@@ -54,8 +56,6 @@ export const tourDetail = async (req, res) => {
         console.log("캐시된 관광 상세 데이터 사용");
         return res.json(cached.data);
     }
-
-
 
     try {
         const result = await TourService.tourDetailService(id, contentTypeId);

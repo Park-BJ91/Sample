@@ -3,7 +3,8 @@ import { Signgu, Sido } from '../models/Regions.js';
 import TourApi from '../api/tourAPI.js';
 import weatherAPI from '../api/weatherAPI.js';
 import { mapTourParams, TOUR_REGION_CODE_MAP } from '../mappers/tour/tourMapper.js';
-import mariadbSequelize from '../config/mariadb.js';
+// import mariadbSequelize from '../config/mariadb.js';
+import db from '../config/index.js';
 
 import dfsXyConv from '../utils/dfs_xy_conv.js';
 import baseDateTime from '../utils/baseDateTime.js';
@@ -14,7 +15,8 @@ import baseDateTime from '../utils/baseDateTime.js';
 export const regionsSearchAllService = async () => {
     console.log("서버 지역 전체 검색");
 
-    const results = await mariadbSequelize.query(
+    // const results = await mariadbSequelize.query(
+    const results = await db.query(
         `SELECT s.sido_code, s.sido_name,
               JSON_ARRAYAGG(JSON_OBJECT('signguCode', g.signgu_code, 'signguName', g.signgu_name)) AS signguList
        FROM tour_sido s
@@ -70,7 +72,8 @@ export const updateRegions = async () => {
 
     console.log("Grouped Regions:", grouped); // grouped 객체 출력 { }
 
-    await mariadbSequelize.transaction(async (t) => {
+    // await mariadbSequelize.transaction(async (t) => {
+    await db.transaction(async (t) => {
         // Sido Bulk Insert or Update
         const sidoRows = Object.values(grouped).map(sido => ({
             sido_code: sido.sidoCode,

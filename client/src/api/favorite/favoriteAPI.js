@@ -19,7 +19,7 @@ export const checkFavoriteExistsAPI = async (contentId, contentTypeId) => {
     try {
         const response = await favoriteAxios.get(`${FAVORITE_API_BASE_URL}/check`, {
             params: { contentId, contentTypeId },
-            withCredentials: true
+            withCredentials: true // 쿠키 포함
         });
         return response.data.exists;
     } catch (error) {

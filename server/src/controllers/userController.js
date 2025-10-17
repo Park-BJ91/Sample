@@ -30,8 +30,6 @@ export async function signup(req, res) {
             zonecode
         }
 
-        console.log("@@@@@@@@@@@ createdUser:", createdUser);
-
         await createUser(createdUser);
 
         return res.status(201).json({ message: 'User registered' });
