@@ -134,7 +134,7 @@ export const addBoardImage = async (imageData) => {
 };
 
 /** BoardImage 삭제 */
-export const boardTempImageDeleteDB = async (userId, imageUrl) => {
+export const boardImageDeleteDB = async (userId, imageUrl) => {
     const t = await db.transaction();
     try {
         const result = await BoardImage.destroy({ where: { userId, url: imageUrl.url, id: imageUrl.id }, transaction: t });

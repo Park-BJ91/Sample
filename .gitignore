@@ -180,4 +180,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Server image file
+server/uploads/permanent
+server/uploads/temp
 # End of https://www.toptal.com/developers/gitignore/api/windows,react,node

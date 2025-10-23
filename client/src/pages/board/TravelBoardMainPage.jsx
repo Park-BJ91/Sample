@@ -1,28 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getBoardPostsAPI } from '@api/board/boardApi';
 
 export default function TabelBoardMainPage() {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
     const [boardList, setBoardList] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
 
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
-    const pageSize = 1; // 한 페이지에 보여줄 게시물 수
+    const pageLimit = 2; // 한 페이지에 보여줄 게시물 수
     const maxPageButtons = 2; // 한 번에 보여줄 페이지 버튼 수
 
-
-
-    // const totalResults = boardList.length; // 전체 결과 수
-    const totalPages = Math.ceil(totalCount / pageSize); // 전체 페이지 수 계산
-    // const pagedResults = boardList.slice( // 현재 페이지에 해당하는 결과 slice(start: , end: )
-    //     (currentPage - 1) * pageSize, // 시작 인덱스
-    //     currentPage * pageSize // 끝 인덱스
-    // );
+    const totalPages = Math.ceil(totalCount / pageLimit); // 전체 페이지 수 계산 소수점 올림
 
     // 페이지 그룹
-    const currentGroup = Math.floor((currentPage - 1) / maxPageButtons);
+    const currentGroup = Math.floor((currentPage - 1) / maxPageButtons); // 소수점 버림
     const startPage = currentGroup * maxPageButtons + 1;
     const endPage = Math.min(startPage + maxPageButtons - 1, totalPages);
 
@@ -30,14 +22,7 @@ export default function TabelBoardMainPage() {
     useEffect(() => {
         const fetchBoardList = async () => {
             try {
-                const page = parseInt(searchParams.get('page')) || 1;
-                // page 숫자 제외 검증
-                if (isNaN(page) || page < 1) {
-                    console.log('잘못된 페이지 번호, 1로 설정');
-                    setCurrentPage(1);
-                }
-                console.log('현재 페이지:', page);
-                const response = await getBoardPostsAPI(page);
+                const response = await getBoardPostsAPI(currentPage, pageLimit);
 
                 setBoardList(response.posts);
                 setTotalCount(response.totalCount);
@@ -47,7 +32,7 @@ export default function TabelBoardMainPage() {
             }
         };
         fetchBoardList();
-    }, [searchParams]);
+    }, [currentPage]);
 
     const handleWrite = () => {
         navigate('/board/write');
@@ -80,12 +65,13 @@ export default function TabelBoardMainPage() {
                 {boardList.map((item) => (
                     <div
                         key={item.bno}
-                        className="border rounded-lg overflow-hidden hover:shadow-lg transition flex flex-col"
+                        onClick={() => navigate(`/board/detail/${item.bno}`)}
+                        className="border rounded-lg overflow-hidden hover:shadow-lg hover:scale-105 transition flex flex-col cursor-pointer"
                     >
                         {/* 이미지 영역: 세로 공간의 2/3 차지 */}
                         <div className="flex-2">
                             <img
-                                src={item.thumbnailUrl}
+                                src={item.thumbnailUrl ? item.thumbnailUrl : '/no_image.jpg'}
                                 alt={item.title}
                                 className="w-full h-full lg:max-h-[200px] lg:min-h-[200px] object-cover p-0.5 rounded-t-lg"
                             />
@@ -109,10 +95,10 @@ export default function TabelBoardMainPage() {
                 {/* Prev 그룹 버튼 */}
                 {startPage > 1 && (
                     <button
-                        onClick={() => handlePageChange(startPage - 1)}
+                        onClick={() => setCurrentPage(startPage - 1)}
                         className="px-3 py-1 rounded bg-gray-200 hover:bg-blue-100 text-gray-700"
                     >
-                        &laquo; Prev
+                        Prev
                     </button>
                 )}
 
@@ -122,7 +108,7 @@ export default function TabelBoardMainPage() {
                     return (
                         <button
                             key={page}
-                            onClick={() => handlePageChange(page)}
+                            onClick={() => setCurrentPage(page)}
                             className={`px-3 py-1 rounded ${currentPage === page
                                 ? 'bg-blue-600 text-white'
                                 : 'bg-gray-200 text-gray-700 hover:bg-blue-100'
@@ -136,18 +122,19 @@ export default function TabelBoardMainPage() {
                 {/* Next 그룹 버튼 */}
                 {endPage < totalPages && (
                     <button
-                        onClick={() => handlePageChange(endPage + 1)}
+                        onClick={() => setCurrentPage(endPage + 1)}
                         className="px-3 py-1 rounded bg-gray-200 hover:bg-blue-100 text-gray-700"
                     >
-                        Next &raquo;
+                        Next
                     </button>
                 )}
 
-                {/* 현재 페이지 표시 */}
-                <span className="ml-4 text-gray-600">
-                    페이지 {currentPage} / {totalPages}
-                </span>
             </div>
+
+            {/* 현재 페이지 표시 */}
+            <span className="flex justify-center items-center mb-4">
+                페이지 {currentPage} / {totalPages}
+            </span>
 
 
         </div>

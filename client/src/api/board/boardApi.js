@@ -27,6 +27,18 @@ export const boardTempImageDeleteAPI = async (info) => {
     }
 };
 
+/** 게시판 영구 이미지 삭제 */
+export const boardPermanentImageDeleteAPI = async (info) => {
+    console.log("삭제할 영구 이미지 정보 #############:", info);
+    try {
+        const response = await boardAxios.delete('/permanent-image', { data: { info } });
+        return response.data; // 삭제된 이미지의 URL 반환
+    } catch (error) {
+        console.error("Error deleting permanent image:", error);
+        throw error;
+    }
+};
+
 /** 게시물 생성 */
 export const createBoardPostAPI = async (postData) => {
     try {
@@ -39,9 +51,9 @@ export const createBoardPostAPI = async (postData) => {
 };
 
 /** 게시물 목록 조회 */
-export const getBoardPostsAPI = async (page) => {
+export const getBoardPostsAPI = async (page, limit) => {
     try {
-        const response = await boardAxios.get('/main', { params: { page: page, limit: 10 } });
+        const response = await boardAxios.get('/main', { params: { page: page, limit: limit } });
         return response.data; // 게시물 목록 반환
     } catch (error) {
         console.error("Error fetching board posts:", error);
@@ -49,21 +61,32 @@ export const getBoardPostsAPI = async (page) => {
     }
 };
 
-/** 특정 게시물 조회 */
-export const getBoardPostByIdAPI = async (postId) => {
+/** 게시물 상세 조회 */
+export const getBoardPostByIdAPI = async (bno) => {
     try {
-        const response = await boardAxios.get(`/posts/${postId}`);
-        return response.data; // 특정 게시물 데이터 반환
+        const response = await boardAxios.get(`/posts/${bno}`, { withCredentials: true });
+        return response.data; // 데이터 반환
     } catch (error) {
         console.error("Error fetching board post by ID:", error);
         throw error;
     }
 };
 
-/** 게시물 수정 */
-export const updateBoardPostAPI = async (postId, updatedData) => {
+/** 게시물 상세 이미지 조회 */
+export const getBoardPostByIdImages = async (bno) => {
     try {
-        const response = await boardAxios.put(`/posts/${postId}`, updatedData);
+        const response = await boardAxios.get(`/posts/${bno}/images`, { withCredentials: true });
+        return response.data; // 이미지 목록 반환
+    } catch (error) {
+        console.error("Error fetching board post images by ID:", error);
+        throw error;
+    }
+};
+
+/** 게시물 수정 */
+export const updateBoardPostAPI = async (bno, updatedData) => {
+    try {
+        const response = await boardAxios.put(`/posts/${bno}`, updatedData);
         return response.data; // 업데이트된 게시물 데이터 반환
     } catch (error) {
         console.error("Error updating board post:", error);
@@ -72,9 +95,9 @@ export const updateBoardPostAPI = async (postId, updatedData) => {
 };
 
 /** 게시물 삭제 */
-export const deleteBoardPostAPI = async (postId) => {
+export const deleteBoardPostAPI = async (bno) => {
     try {
-        const response = await boardAxios.delete(`/posts/${postId}`);
+        const response = await boardAxios.delete(`/posts/${bno}`);
         return response.data; // 삭제 결과 반환
     } catch (error) {
         console.error("Error deleting board post:", error);
@@ -83,9 +106,9 @@ export const deleteBoardPostAPI = async (postId) => {
 };
 
 /** 좋아요 */
-export const likeBoardPostAPI = async (postId) => {
+export const likeBoardPostAPI = async (bno) => {
     try {
-        const response = await boardAxios.post(`/posts/${postId}/like`);
+        const response = await boardAxios.post(`/posts/${bno}/like`);
         return response.data; // 좋아요 결과 반환
     } catch (error) {
         console.error("Error liking board post:", error);
@@ -95,9 +118,9 @@ export const likeBoardPostAPI = async (postId) => {
 
 
 /** 좋아요 취소 */
-export const unlikeBoardPostAPI = async (postId) => {
+export const unlikeBoardPostAPI = async (bno) => {
     try {
-        const response = await boardAxios.post(`/posts/${postId}/unlike`);
+        const response = await boardAxios.post(`/posts/${bno}/unlike`);
         return response.data; // 좋아요 취소 결과 반환
     } catch (error) {
         console.error("Error unliking board post:", error);
@@ -106,9 +129,9 @@ export const unlikeBoardPostAPI = async (postId) => {
 };
 
 /** 댓글 추가 */
-export const addCommentAPI = async (postId, commentData) => {
+export const addCommentAPI = async (bno, commentData) => {
     try {
-        const response = await boardAxios.post(`/posts/${postId}/comments`, commentData);
+        const response = await boardAxios.post(`/posts/${bno}/comments`, commentData);
         return response.data; // 추가된 댓글 데이터 반환
     } catch (error) {
         console.error("Error adding comment:", error);
@@ -117,9 +140,9 @@ export const addCommentAPI = async (postId, commentData) => {
 };
 
 /** 댓글 목록 조회 */
-export const getCommentsAPI = async (postId) => {
+export const getCommentsAPI = async (bno) => {
     try {
-        const response = await boardAxios.get(`/posts/${postId}/comments`);
+        const response = await boardAxios.get(`/posts/${bno}/comments`);
         return response.data; // 댓글 목록 반환
     } catch (error) {
         console.error("Error fetching comments:", error);
@@ -128,9 +151,9 @@ export const getCommentsAPI = async (postId) => {
 };
 
 /** 댓글 삭제 */
-export const deleteCommentAPI = async (postId, commentId) => {
+export const deleteCommentAPI = async (bno, commentId) => {
     try {
-        const response = await boardAxios.delete(`/posts/${postId}/comments/${commentId}`);
+        const response = await boardAxios.delete(`/posts/${bno}/comments/${commentId}`);
         return response.data; // 삭제 결과 반환
     } catch (error) {
         console.error("Error deleting comment:", error);
@@ -139,9 +162,9 @@ export const deleteCommentAPI = async (postId, commentId) => {
 };
 
 /** 댓글 수정 */
-export const updateCommentAPI = async (postId, commentId, updatedData) => {
+export const updateCommentAPI = async (bno, commentId, updatedData) => {
     try {
-        const response = await boardAxios.put(`/posts/${postId}/comments/${commentId}`, updatedData);
+        const response = await boardAxios.put(`/posts/${bno}/comments/${commentId}`, updatedData);
         return response.data; // 업데이트된 댓글 데이터 반환
     } catch (error) {
         console.error("Error updating comment:", error);

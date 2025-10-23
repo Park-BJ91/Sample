@@ -7,9 +7,7 @@ import passport from 'passport';
 /** 쿠키 검증 미들웨어 */
 export const verifyCookieToken = (req, res, next) => {
     const token = req.cookies.token; // 쿠키에서 토큰 추출
-
     console.log("####################  토큰 미들웨어 확인....!!!! ");
-
     if (!token) {
         return res.status(401).json({ result: AUTH_TOKEN_RESULT.TOKEN_NOT_FOUND, message: '토큰 없음' });
     }
@@ -22,6 +20,27 @@ export const verifyCookieToken = (req, res, next) => {
     } catch (err) {
         return res.status(401).json({ result: AUTH_TOKEN_RESULT.TOKEN_INVALID, message: '토큰 검증 실패' });
     }
+};
+
+/** 쿠키 검증 미들웨어 - 토큰 없으면 null로 처리하고 다음으로 진행 */
+export const verifyCookieNullAndProceed = (req, res, next) => {
+    const token = req.cookies.token; // 쿠키에서 토큰 추출
+    if (!token) {
+        req.user = null;
+    } else {
+        try {
+            jwt.verify(token, process.env.JWT_SECRET, (err, user) => { // 토큰 검증
+                if (err) {
+                    req.user = null;
+                } else {
+                    req.user = user;
+                }
+            });
+        } catch (err) {
+            req.user = null;
+        }
+    }
+    next();
 };
 
 /** 로컬 인증 미들웨어 */

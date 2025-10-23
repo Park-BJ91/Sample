@@ -16,8 +16,10 @@ import UserSettingsPage from '@pages/user/UserSettingsPage';
 import FavoriteListPage from '@pages/user/FavoriteListPage';
 import PostListPage from '@pages/user/PostListPage';
 
-import TravelBoardMainPage from '@pages/board/TabelBoardMainPage';
+import TravelBoardMainPage from '@pages/board/TravelBoardMainPage';
+import TravelBoardDetailPage from '@pages/board/TravelBoardDetailPage';
 import TravelBoardWritePage from '@pages/board/TravelBoardWritePage';
+import TravelBoardEditPage from '@pages/board/TravelBoardEditPage';
 
 import Layout from '@components/Layout';
 
@@ -55,7 +57,15 @@ export default function Main() {
                                 </ProtectedRoute>
                             }
                         />
-
+                        <Route path="/board/detail/:bno" element={<TravelBoardDetailPage />} />
+                        <Route
+                            path="/board/edit/:bno"
+                            element={
+                                <ProtectedRoute>
+                                    <TravelBoardEditPage />
+                                </ProtectedRoute>
+                            }
+                        />
 
                     </Route>
 
