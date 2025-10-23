@@ -8,7 +8,7 @@ export default function TabelBoardMainPage() {
     const [totalCount, setTotalCount] = useState(0);
 
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
-    const pageLimit = 2; // 한 페이지에 보여줄 게시물 수
+    const pageLimit = 6; // 한 페이지에 보여줄 게시물 수
     const maxPageButtons = 2; // 한 번에 보여줄 페이지 버튼 수
 
     const totalPages = Math.ceil(totalCount / pageLimit); // 전체 페이지 수 계산 소수점 올림
@@ -61,33 +61,34 @@ export default function TabelBoardMainPage() {
             </div>
 
             {/* 게시물 목록 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                {boardList.map((item) => (
-                    <div
-                        key={item.bno}
-                        onClick={() => navigate(`/board/detail/${item.bno}`)}
-                        className="border rounded-lg overflow-hidden hover:shadow-lg hover:scale-105 transition flex flex-col cursor-pointer"
-                    >
-                        {/* 이미지 영역: 세로 공간의 2/3 차지 */}
-                        <div className="flex-2">
-                            <img
-                                src={item.thumbnailUrl ? item.thumbnailUrl : '/no_image.jpg'}
-                                alt={item.title}
-                                className="w-full h-full lg:max-h-[200px] lg:min-h-[200px] object-cover p-0.5 rounded-t-lg"
-                            />
-                        </div>
+            <div className="max-w-5xl mx-auto p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                    {boardList.map((item) => (
+                        <div
+                            key={item.bno}
+                            onClick={() => navigate(`/board/detail/${item.bno}`)}
+                            className="bg-white rounded-lg shadow hover:shadow-lg hover:scale-105 cursor-pointer transition p-4 flex flex-col"
+                        >
+                            {/* 이미지 영역: 세로 공간의 2/3 차지 */}
+                            <div className="flex-2">
+                                <img
+                                    src={item.thumbnailUrl ? item.thumbnailUrl : '/no_img.jpg'}
+                                    alt={item.title}
+                                    className="w-full h-full lg:max-h-[200px] lg:min-h-[200px] object-cover p-0.5 rounded-t-lg"
+                                />
+                            </div>
 
-                        {/* 내용 영역: 남은 1/3 공간 차지 */}
-                        <div className="p-4 flex flex-col justify-between">
-                            <hr className="my-2" />
-                            <h2 className="text-lg font-semibold line-clamp-2">{item.title}</h2>
-                            <p className="text-sm text-gray-500 mt-1">
+
+                            <h3 className="text-lg font-semibold mb-1">{item.title}</h3>
+                            <p className="text-gray-700 flex-1 mb-2">
                                 {item.nickName} | {new Date(item.createdAt).toLocaleDateString()}
                             </p>
+
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
+
 
             {/* 페이지 네비게이션 */}
             <div className="flex justify-center items-center my-12 space-x-2">
