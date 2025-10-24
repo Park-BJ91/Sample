@@ -84,6 +84,32 @@ export const naverMapDynamicApi = axios.create({
 });
 
 
+tourApi.interceptors.request.use(config => {
+    // 모든 요청에 공통 파라미터 추가
+    config.params = {
+        ...config.params,
+        ...TOUR_REQUIRED_FIELDS
+    };
+    return config;
+});
+
+weatherShortApi.interceptors.request.use(config => {
+    // 모든 요청에 공통 파라미터 추가
+    config.params = {
+        ...config.params,
+        ...WEATHER_FIELDS
+    };
+    return config;
+});
+
+weatherMidApi.interceptors.request.use(config => {
+    // 모든 요청에 공통 파라미터 추가
+    config.params = {
+        ...config.params,
+        ...WEATHER_FIELDS
+    };
+    return config;
+});
 
 export default {
     tourApi,
@@ -91,5 +117,4 @@ export default {
     weatherMidApi,
     naverMapStaticApi,
     naverMapDynamicApi,
-
 };

@@ -5,11 +5,21 @@ import { toursList } from '@api/tour/tourApi';
 import noImage from '@public/no_img.jpg';
 
 
-const PAGE_SIZE = 9;
+// const dummyDataList = [
+//     { contentId: 1, contentTypeId: 12, title: '경북궁', baseAddr: '서울특별시 종로구 사직로 161', orgImage: '/A.png' },
+//     { contentId: 2, contentTypeId: 14, title: '창덕궁', baseAddr: '서울특별시 종로구 율곡로 99', orgImage: '/B.png' },
+//     { contentId: 3, contentTypeId: 15, title: '한옥마을', baseAddr: '서울특별시 종로구 북촌로11길', orgImage: '/C.png' },
+//     { contentId: 4, contentTypeId: 12, title: '숭례문', baseAddr: '서울특별시 중구 세종대로 40', orgImage: '/D.png' },
+//     { contentId: 5, contentTypeId: 14, title: '동대문', baseAddr: '서울특별시 종로구 종로 288', orgImage: '/E.png' },
+// ]
+
+
+const PAGE_SIZE = 6;
 
 export default function SearchContent() {
     const [searchParams] = useSearchParams();
     const [filteredResults, setFilteredResults] = useState([]); // 필터링된 결과 저장
+    // const [filteredResults, setFilteredResults] = useState(dummyDataList); // 더미로 진행
     const [currentPage, setCurrentPage] = useState(1);
 
     // Pagination logic
@@ -20,11 +30,11 @@ export default function SearchContent() {
         currentPage * PAGE_SIZE // 끝 인덱스
     );
 
-
     useEffect(() => {
         const sidoCode = searchParams.get('sidoCode');
         const signguCode = searchParams.get('signguCode');
 
+        /* 데이터 화재 이슈 현재 사용 보류  */
         (async () => {
             try {
                 const { data } = await toursList({ sidoCode, signguCode });
@@ -43,8 +53,6 @@ export default function SearchContent() {
             // Cleanup if necessary
         };
     }, [searchParams]);
-
-
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -74,7 +82,7 @@ export default function SearchContent() {
                 ))}
             </div>
             {/* 쪽수 네비게이션 */}
-            {totalPages > 1 && (
+            {totalPages > 0 && (
                 <div className="flex justify-center mt-8 space-x-2">
                     {Array.from({ length: totalPages }, (_, i) => ( // totalPages 길이의 배열로 버튼 생성
                         <button

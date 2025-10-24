@@ -49,16 +49,16 @@ export default function Topbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 bg-white shadow z-50">
             {/* <nav className="bg-white shadow z-50"> */}
-            <div className="px-6 h-14 flex items-center justify-between">
+            <div className="px-6 h-14 flex items-center lg:justify-around sm:justify-between justify-between min-w-[635px]">
 
                 {/* 왼쪽: 홈 아이콘 */}
                 <Link to="/" className="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
                     <Home className="w-6 h-6" />
-                    <span className="hidden md:block font-bold">홈</span>
+                    <span className="block font-bold">홈</span>
                 </Link>
 
                 {/* 가운데: 메뉴 */}
-                <div className="hidden md:flex items-center space-x-6 text-gray-700">
+                <div className="md:flex items-center space-x-6 text-gray-700">
                     <Link to="/board" className="flex items-center hover:text-blue-600">
                         <FileText className="w-5 h-5 mr-1" /> 게시판
                     </Link>
@@ -85,9 +85,9 @@ export default function Topbar() {
                             className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg py-2"
                             ref={menuRef}
                         >
-                            <Link to="/user/infos/settings" className="block px-4 py-2 hover:bg-gray-100">
+                            {/* <Link to="/user/infos/settings" className="block px-4 py-2 hover:bg-gray-100">
                                 내 정보
-                            </Link>
+                            </Link> */}
                             <Link to="/user/infos/favorites" className="block px-4 py-2 hover:bg-gray-100">
                                 즐겨찾기
                             </Link>

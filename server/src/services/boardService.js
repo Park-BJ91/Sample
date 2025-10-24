@@ -192,19 +192,77 @@ export const createBoardPostService = async (userId, postData) => {
 /** 게시판 포스트 수정 서비스 */
 export const updateBoardPostService = async (userId, postId, postData) => {
     const t = await db.transaction();
+
+    const movedFiles = []; // ✅ 이동된 파일들을 추적하기 위한 배열
+
+    console.log("############ 서비스 레이어 postId:", postId);
+
+    const imageUrlChange = postData.content.replaceAll('/temp/', '/permanent/');
+    console.log("변경된 이미지 URL들:", imageUrlChange);
+
+    console.log("############ 서비스 레이어 postData:", postData);
+
     try {
         // 게시물 업데이트
-        const [updateCount, updatedPosts] = await Board.update(
+        // const [updateCount, updatedPosts] = await Board.update(
+        const updatedPosts = await Board.update(
             {
                 title: postData.title,
-                content: postData.content
+                content: imageUrlChange,
+                updatedAt: db.Sequelize.literal('CURRENT_TIMESTAMP')
             },
             {
                 where: { bno: postId, userId: userId },
                 transaction: t,
-                returning: true
+                silent: true, // updatedAt 수동 업데이트 허용
             }
         );
+
+
+
+        for (const img of postData.images) {
+            console.log("이미지 정보:", img);
+            // 이미지가 임시 상태라면 게시물에 연결
+            if (img && img.id) {
+                const boardImage = await BoardImage.findOne({ where: { id: img.id, userId: userId, status: 'temp' }, transaction: t });
+                console.log("찾은 BoardImage:", boardImage);
+                if (boardImage) {
+
+                    // 파일 시스템에서 임시 폴더에서 영구 폴더로 이동
+                    const tempPath = boardImage.storedPath; // 예: uploads/temp/파일이름
+                    const fileName = path.basename(tempPath);
+                    const permanentDir = path.dirname(tempPath).replace('\\temp', '\\permanent');
+                    const permanentPath = path.join(permanentDir, fileName);
+
+                    // 디렉토리 생성
+                    if (!fs.existsSync(permanentDir)) {
+                        console.log("영구 디렉토리 생성:", permanentDir);
+                        fs.mkdirSync(permanentDir, { recursive: true });
+                    }
+                    // 파일 이동
+                    fs.renameSync(tempPath, permanentPath);
+                    console.log(`파일 이동: ${tempPath} -> ${permanentPath}`);
+
+                    movedFiles.push(permanentPath); // 이동된 파일 경로 저장
+
+                    // BoardImage 업데이트
+                    await boardImage.update({
+                        boardId: postId,
+                        storedPath: permanentPath,
+                        url: boardImage.url.replace('/temp/', '/permanent/'),
+                        status: 'confirmed'
+                    }, { transaction: t });
+                    console.log("BoardImage 업데이트 완료:", boardImage.id);
+                } else {
+                    console.log("임시 이미지 디비에서 못 찾음:", img.id);
+                }
+
+            } else {
+                console.log("유효하지 않은 이미지 정보:", img);
+            }
+        }
+
+
         await t.commit();
         return updatedPosts[0]; // 업데이트된 게시물 반환
     } catch (error) {
@@ -243,6 +301,39 @@ export const deleteBoardPostService = async (userId, bno) => {
     } catch (error) {
         await t.rollback();
         console.error('게시판 포스트 삭제 에러:', error);
+        throw error;
+    }
+};
+
+/** 사용자 작성 게시물 목록 조회 서비스 */
+export const getUserBoardPostsService = async (userId) => {
+
+    console.log("############## 서비스 레이어 userId:", userId);
+
+    const t = await db.transaction();
+    try {
+        const posts = await db.query(
+            `SELECT
+                b.bno,
+                b.title,
+                b.createdAt
+            FROM
+                Board b
+            WHERE
+                b.userId = ${userId}
+            ORDER BY
+                b.createdAt DESC
+        `, {
+            replacements: [userId], // SQL 인젝션 방지를 위한 치환 값
+            type: db.Sequelize.QueryTypes.SELECT,
+            transaction: t
+        });
+
+        await t.commit();
+        return posts;
+    } catch (error) {
+        await t.rollback();
+        console.error('사용자 작성 게시물 목록 조회 에러:', error);
         throw error;
     }
 };
@@ -294,5 +385,6 @@ export default {
     updateBoardPostService,
     deleteBoardPostService,
     getBoardPostByIdImagesService,
+    getUserBoardPostsService,
 };
 

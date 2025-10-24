@@ -85,3 +85,25 @@ button:hover {
   display: table;
   clear: both;
 }
+
+.search-div {
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  display: grid;
+  /* 모바일 기본 1열 */
+  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  /* 버튼과 입력창 밑맞춤 */
+}
+
+@media (max-width: 1200px) {
+
+  /* md 이상 */
+  .search-div {
+    grid-template-columns: repeat(1, 1fr);
+    /* 태블릿 이상 3열 */
+  }
+}

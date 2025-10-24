@@ -43,7 +43,7 @@ export default function Main() {
                         </Route>
 
                         <Route path="/user/infos" element={<UserInfoDashBoardPage />} >
-                            <Route path="settings" element={<UserSettingsPage />} />
+                            {/* <Route path="settings" element={<UserSettingsPage />} /> */}
                             <Route path="favorites" element={<FavoriteListPage />} />
                             <Route path="posts" element={<PostListPage />} />
                         </Route>

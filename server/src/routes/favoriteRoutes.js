@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { verifyCookieToken } from '../middlewares/authMiddleware.js';
-import { addFavorite, getFavoritesByUserId, deleteFavorite, isFavoriteExists } from '../models/Favorite.js';
+import { addFavorite, getFavoritesByUserId, deleteFavorite, isFavoriteExists, getFavoriteId } from '../models/Favorite.js';
 
 const router = Router();
 
@@ -20,7 +20,10 @@ router.post('/add', verifyCookieToken, async (req, res) => {
         const existingFavorites = await isFavoriteExists(userId, contentId, contentTypeId);
 
         if (existingFavorites) {
-            return res.status(409).json({ state: 409, message: '이미 즐겨찾기에 추가된 항목입니다.' });
+            const favId = await getFavoriteId(userId, contentId);
+            console.log("이미 즐겨찾기에 존재하는 항목입니다. 즐겨찾기 ID :: ", favId);
+            const result = await deleteFavorite(userId, favId);
+            return res.status(200).json(result);
         }
 
         // 즐겨찾기 추가 DB 저장
@@ -68,12 +71,16 @@ router.delete('/favorites/:favId', verifyCookieToken, async (req, res) => {
     const userId = req.user.id;
     const favId = req.params.favId;
 
+    console.log("즐겨찾기 삭제 요청 ID :: ", favId);
+    console.log("즐겨찾기 삭제 요청 사용자 ID :: ", userId);
+
     try {
         const result = await deleteFavorite(userId, favId);
-        if (result.affectedRows === 0) {
+        if (result.isFavorite === null) {
             return res.status(404).json({ state: 404, message: '즐겨찾기를 찾을 수 없습니다.' });
         }
-        return res.status(200).json({ state: 200, message: '즐겨찾기가 삭제되었습니다.' });
+        // return res.status(200).json({ state: 200, message: '즐겨찾기가 삭제되었습니다.' });
+        return res.status(200).json(result);
     } catch (error) {
         console.error("Error deleting favorite:", error);
         return res.status(500).json({ state: 500, message: '서버 오류로 인해 즐겨찾기 삭제에 실패했습니다.' });

@@ -6,6 +6,117 @@ import { addFavoriteAPI, checkFavoriteExistsAPI } from '@api/favorite/favoriteAP
 import TourDetailMap from '@components/map/NaverMap';
 import { useAuth } from '@contexts/AuthContext'
 
+const dummyDataList = [
+    {
+        contentId: 1, contentTypeId: 12,
+        title: '경북궁', baseAddr: '서울특별시 종로구 사직로 161', orgImage: '/A.png',
+        overview: '경복궁은 조선시대의 대표적인 궁궐로, 서울의 중심에 위치해 있습니다. 아름다운 건축물과 넓은 정원이 어우러져 있어 많은 관광객들이 찾는 명소입니다.',
+        thumbImage: '/A.png', tel: '02-123-4567', homepage: '<a href="https://royal.khs.go.kr/ROYAL/contents/R601000000.do?schGroupCode=gbg&schGroupCodeNm=%EA%B2%BD%EB%B3%B5%EA%B6%81" target="_blank" rel="noopener noreferrer">공식 홈페이지</a>'
+    },
+    {
+        contentId: 2, contentTypeId: 14,
+        title: '창덕궁', baseAddr: '서울특별시 종로구 율곡로 99', orgImage: '/B.png',
+        overview: '창덕궁은 유네스코 세계문화유산으로 지정된 조선시대의 궁궐입니다. 자연과 조화를 이루는 아름다운 후원이 유명하며, 역사적인 건축물들이 잘 보존되어 있습니다.',
+        thumbImage: '/B.png', tel: '02-234-5678', homepage: '<a href="https://royal.khs.go.kr/ROYAL/contents/R601000000.do?schGroupCode=cdg" target="_blank" rel="noopener noreferrer">공식 홈페이지</a>'
+    },
+    {
+        contentId: 3, contentTypeId: 15,
+        title: '한옥마을', baseAddr: '서울특별시 종로구 북촌로11길', orgImage: '/C.png',
+        overview: '한옥마을은 전통 한옥이 모여 있는 지역으로, 한국의 전통 건축미를 느낄 수 있는 곳입니다. 좁은 골목길과 고즈넉한 분위기가 매력적이며, 다양한 문화 체험도 가능합니다.',
+        thumbImage: '/C.png', tel: '02-345-6789', homepage: '<a href="http://www.hanokmaeul.go.kr" target="_blank" rel="noopener noreferrer">공식 홈페이지</a>'
+    },
+    {
+        contentId: 4, contentTypeId: 12,
+        title: '숭례문', baseAddr: '서울특별시 중구 세종대로 40', orgImage: '/D.png',
+        overview: '숭례문은 조선시대의 대표적인 문으로, 서울의 중심부에 위치해 있습니다. 아름다운 건축물과 역사적인 가치로 많은 관광객들이 찾는 명소입니다.',
+        thumbImage: '/D.png', tel: '02-456-7890', homepage: '<a href="http://www.sungnyemun.go.kr" target="_blank" rel="noopener noreferrer">공식 홈페이지</a>'
+    },
+    {
+        contentId: 5, contentTypeId: 14,
+        title: '동대문', baseAddr: '서울특별시 종로구 종로 288', orgImage: '/E.png',
+        overview: '동대문은 서울의 대표적인 시장으로, 다양한 쇼핑과 먹거리를 즐길 수 있는 곳입니다. 특히 밤늦게까지 운영되는 상점들이 많아 야시장 분위기를 느낄 수 있습니다.',
+        thumbImage: '/E.png', tel: '02-567-8901', homepage: '<a href="http://www.ddm.go.kr" target="_blank" rel="noopener noreferrer">공식 홈페이지</a>'
+    },
+]
+
+const dummyDetailInfo = [
+    {
+        contentId: 1, contentTypeId: 12,
+        infoname: '입장료',
+        infotext: '성인 3,000원, 청소년 1,500원, 어린이 1,000원'
+    },
+    {
+        contentId: 2, contentTypeId: 14,
+        infoname: '가이드 투어',
+        infotext: '매일 10:00, 14:00에 운영되며, 사전 예약 필요'
+    },
+    {
+        contentId: 3, contentTypeId: 15,
+        infoname: '체험 프로그램',
+        infotext: '한복 체험, 전통 공예 체험 등 다양한 프로그램 운영'
+    },
+    {
+        contentId: 4, contentTypeId: 12,
+        infoname: '문화 행사',
+        infotext: '매주 토요일 전통 공연 및 행사 개최'
+    },
+    {
+        contentId: 5, contentTypeId: 14,
+        infoname: '운영 시간',
+        infotext: '10:00 ~ 22:00 (연중무휴)'
+    },
+]
+
+
+const dummyDetailIntro = [
+    {
+        contentId: 1, contentTypeId: 12,
+        expguide: '경복궁은 매일 09:00부터 18:00까지 개방하며, 입장은 17:00까지 가능합니다. 매주 월요일은 휴무입니다.',
+        opendate: '2025-09-28',
+        parking: '경복궁 내 주차장이 있으며, 유료로 운영됩니다.',
+        restdate: '매주 월요일',
+        usetime: '09:00 ~ 18:00',
+        infocenter: '02-123-4567'
+    },
+    {
+        contentId: 2, contentTypeId: 14,
+        expguide: '창덕궁은 매일 09:00부터 17:30까지 개방하며, 입장은 16:30까지 가능합니다. 매주 화요일은 휴무입니다.',
+        opendate: '2025-10-05',
+        parking: '창덕궁 인근에 공영주차장이 있습니다.',
+        restdate: '매주 화요일',
+        usetime: '09:00 ~ 17:30',
+        infocenter: '02-234-5678'
+    },
+    {
+        contentId: 3, contentTypeId: 15,
+        expguide: '한옥마을은 연중무휴로 개방되며, 특별한 개장 시간은 없습니다. 다만, 일부 한옥 체험관은 운영 시간이 다를 수 있습니다.',
+        opendate: '2025-11-15',
+        parking: '한옥마을 주변에 유료 주차장이 있습니다.',
+        restdate: '연중무휴',
+        usetime: '상시 개방',
+        infocenter: '02-345-6789'
+    },
+    {
+        contentId: 4, contentTypeId: 12,
+        expguide: '숭례문은 매일 09:00부터 18:00까지 개방하며, 입장은 17:00까지 가능합니다. 매주 수요일은 휴무입니다.',
+        opendate: '2025-12-01',
+        parking: '숭례문 인근에 공영주차장이 있습니다.',
+        restdate: '매주 수요일',
+        usetime: '09:00 ~ 18:00',
+        infocenter: '02-456-7890'
+    },
+    {
+        contentId: 5, contentTypeId: 14,
+        expguide: '동대문 시장은 매일 10:00부터 22:00까지 운영되며, 일부 상점은 더 늦게까지 영업합니다.',
+        opendate: '2025-10-20',
+        parking: '동대문 인근에 유료 주차장이 있습니다.',
+        restdate: '연중무휴',
+        usetime: '10:00 ~ 22:00',
+        infocenter: '02-567-8901'
+    },
+]
+
+
 export default function TourDetail() {
 
     const [searchParams] = useSearchParams();
@@ -39,6 +150,27 @@ export default function TourDetail() {
     useEffect(() => {
         // ID로 디테일 데이터 불러오기
         (async () => {
+            // 더미 데이터로 진행
+            /*             const detailData = dummyDataList.find(item => item.contentId.toString() === id && item.contentTypeId.toString() === contentTypeId);
+                        if (detailData) {
+                            setDetailCommon(detailData);
+                        }
+                        const introData = dummyDetailIntro.find(item => item.contentId.toString() === id && item.contentTypeId.toString() === contentTypeId);
+                        if (introData) {
+                            setDetailIntro(introData);
+                        }
+            
+                        const infoData = dummyDetailInfo.filter(item => item.contentId.toString() === id && item.contentTypeId.toString() === contentTypeId);
+                        if (infoData) {
+                            setDetailInfo(infoData);
+                        }
+            
+                        const exists = await checkFavoriteExistsAPI(id, contentTypeId);
+                        setIsFavorite(exists); */
+
+
+
+            /* 데이터 불러오기 공공데이터 화재 이슈로 사용불가 / 복구 2025-10-23 목요일 10시 */
             try {
                 const { data } = await tourDetail(id, contentTypeId);
                 if (data.success) {
@@ -64,7 +196,6 @@ export default function TourDetail() {
     const handleFavorite = async () => {
         if (!isLogin) {
             alert("즐겨찾기는 로그인 후 이용 가능합니다.");
-            // 재사용 할 수 있는 모달창 만들어서 로그인 유도 또는 사용자가 머무를 수 있게 취소
             return;
         }
 
@@ -76,10 +207,13 @@ export default function TourDetail() {
             image: detailCommon.orgImage || detailCommon.thumbImage || null,
         };
 
+        console.log("즐겨찾기 데이터:", favoriteData);
+
+
         await addFavoriteAPI(favoriteData)
             .then(res => {
                 if (res.status == 200) {
-                    setIsFavorite(true);
+                    setIsFavorite(res.data.isFavorite);
                 } else {
                     alert("즐겨찾기 추가에 실패했습니다.");
                 }

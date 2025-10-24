@@ -1,7 +1,7 @@
 // ConfirmModal.js
 import React from "react";
 
-const ConfirmModal = ({ onConfirm, onCancel }) => {
+const ConfirmModal = ({ onConfirm, onCancel, title, message }) => {
     const overlayStyle = {
         position: "fixed",
         top: 0,
@@ -100,8 +100,8 @@ const ConfirmModal = ({ onConfirm, onCancel }) => {
                     style={modalStyle}
                     onClick={(e) => e.stopPropagation()} // 배경 클릭 시 닫히지만 모달 내부 클릭은 무시
                 >
-                    <h3 style={titleStyle}>게시물 삭제</h3>
-                    <p style={messageStyle}>정말로 이 게시물을 삭제하시겠습니까?</p>
+                    <h3 style={titleStyle}>{title}</h3>
+                    <p style={messageStyle}>{message}</p>
 
                     <div style={buttonContainerStyle}>
                         <button style={confirmButton} onClick={onConfirm}>

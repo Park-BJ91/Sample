@@ -22,8 +22,11 @@ router.post('/posts', verifyCookieToken, boardController.createBoardPost);
 
 // 게시물 수정 라우트
 router.put('/posts/:bno', verifyCookieToken, boardController.updateBoardPost);
-// // 게시물 삭제 라우트
+// 게시물 삭제 라우트
 router.delete('/posts/:bno', verifyCookieToken, boardController.deleteBoardPost);
+
+// 사용자 작성 게시물 목록 조회 라우트
+router.get('/posts/user/list', verifyCookieToken, boardController.getUserBoardPosts);
 
 
 

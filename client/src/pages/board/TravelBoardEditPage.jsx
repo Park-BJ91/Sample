@@ -121,6 +121,8 @@ export default function TravelBoardEditPage() {
                 <ConfirmModal
                     onConfirm={confirmAndDelete}
                     onCancel={() => setShowConfirmModal(false)}
+                    title="게시물 삭제"
+                    message="정말로 이 게시물을 삭제하시겠습니까?"
                 />
             )}
 

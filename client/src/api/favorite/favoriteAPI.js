@@ -5,8 +5,9 @@ const FAVORITE_API_BASE_URL = '/api/favorite';
 /** 즐겨찾기 추가 API */
 export const addFavoriteAPI = async (favoriteData) => {
     try {
-        const response = await favoriteAxios.post(`${FAVORITE_API_BASE_URL}/add`, favoriteData);
-        console.log("🚀 ~ addFavoriteAPI ~ response:", response);
+        // const response = await favoriteAxios.post(`${FAVORITE_API_BASE_URL}/add`, favoriteData);
+        const response = await favoriteAxios.post(`/add`, favoriteData);
+        console.log("🚀 ~ addFavoriteAPI ~ response:", response.data);
         return response;
     } catch (error) {
         console.error("Error adding favorite:", error);
@@ -17,7 +18,8 @@ export const addFavoriteAPI = async (favoriteData) => {
 /** 즐겨찾기 중복 여부 확인 API */
 export const checkFavoriteExistsAPI = async (contentId, contentTypeId) => {
     try {
-        const response = await favoriteAxios.get(`${FAVORITE_API_BASE_URL}/check`, {
+        // const response = await favoriteAxios.get(`${FAVORITE_API_BASE_URL}/check`, {
+        const response = await favoriteAxios.get(`/check`, {
             params: { contentId, contentTypeId },
             withCredentials: true // 쿠키 포함
         });
@@ -31,7 +33,8 @@ export const checkFavoriteExistsAPI = async (contentId, contentTypeId) => {
 /** 즐겨찾기 목록 조회 API */
 export const getFavoritesAPI = async () => {
     try {
-        const response = await favoriteAxios.get(`${FAVORITE_API_BASE_URL}/favorites`, { withCredentials: true });
+        // const response = await favoriteAxios.get(`${FAVORITE_API_BASE_URL}/favorites`, { withCredentials: true });
+        const response = await favoriteAxios.get(`/favorites`, { withCredentials: true });
         return response.data;
     } catch (error) {
         console.error("Error fetching favorites:", error);
@@ -42,7 +45,8 @@ export const getFavoritesAPI = async () => {
 //** 즐겨찾기 삭제 API */
 export const deleteFavoriteAPI = async (favId) => {
     try {
-        const response = await favoriteAxios.delete(`${FAVORITE_API_BASE_URL}/favorites/${favId}`, { withCredentials: true });
+        // const response = await favoriteAxios.delete(`${FAVORITE_API_BASE_URL}/favorites/${favId}`, { withCredentials: true });
+        const response = await favoriteAxios.delete(`/favorites/${favId}`, { withCredentials: true });
         return response;
     } catch (error) {
         console.error("Error deleting favorite:", error);

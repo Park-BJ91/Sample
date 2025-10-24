@@ -78,14 +78,7 @@ export const boardTempImageUpload = async (req, res) => {
 export const updateBoardPost = async (req, res) => {
     const userId = req.user.id;
     const { bno } = req.params;
-    console.log("🚀 ~ updateBoardPost ~ userId:", userId)
-    console.log("🚀 ~ updateBoardPost ~ bno:", bno)
     const { title, content, images } = req.body;
-
-    console.log("🚀 ~ updateBoardPost ~ title:", title)
-    console.log("🚀 ~ updateBoardPost ~ content:", content)
-    console.log("🚀 ~ updateBoardPost ~ images:", images);
-
     try {
         const updatedPost = await BoardService.updateBoardPostService(userId, bno, { title, content, images });
         res.json(updatedPost);
@@ -103,6 +96,18 @@ export const deleteBoardPost = async (req, res) => {
         res.status(200).json({ message: "게시물 삭제 성공" });
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+};
+
+
+/* 사용자 작성 게시물 목록 조회 */
+export const getUserBoardPosts = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        const posts = await BoardService.getUserBoardPostsService(userId);
+        res.json(posts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -169,6 +174,8 @@ export const boardPermanentImageDelete = async (req, res) => {
     }
 };
 
+
+
 export default {
     getBoardPosts,
     getBoardPostById,
@@ -179,4 +186,5 @@ export default {
     boardPermanentImageDelete,
     deleteBoardPost,
     updateBoardPost,
+    getUserBoardPosts,
 }; 

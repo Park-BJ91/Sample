@@ -79,6 +79,8 @@ export default function TravelBoardDetailPage() {
                 <ConfirmModal
                     onConfirm={confirmAndDelete}
                     onCancel={() => setShowConfirmModal(false)}
+                    title="게시물 삭제"
+                    message="게시물을 삭제하시겠습니까?"
                 />
             )}
 

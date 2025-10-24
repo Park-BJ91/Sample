@@ -105,70 +105,90 @@ export const deleteBoardPostAPI = async (bno) => {
     }
 };
 
-/** 좋아요 */
-export const likeBoardPostAPI = async (bno) => {
+
+/** 사용자 등록 게시물 목록 조회 */
+export const getUserBoardPostsAPI = async () => {
     try {
-        const response = await boardAxios.post(`/posts/${bno}/like`);
-        return response.data; // 좋아요 결과 반환
+        const response = await boardAxios.get(`/posts/user/list`, { withCredentials: true });
+        return response.data; // 사용자 게시물 목록 반환
     } catch (error) {
-        console.error("Error liking board post:", error);
+        console.error("Error fetching user board posts:", error);
         throw error;
     }
 };
 
 
-/** 좋아요 취소 */
-export const unlikeBoardPostAPI = async (bno) => {
-    try {
-        const response = await boardAxios.post(`/posts/${bno}/unlike`);
-        return response.data; // 좋아요 취소 결과 반환
-    } catch (error) {
-        console.error("Error unliking board post:", error);
-        throw error;
-    }
-};
 
-/** 댓글 추가 */
-export const addCommentAPI = async (bno, commentData) => {
-    try {
-        const response = await boardAxios.post(`/posts/${bno}/comments`, commentData);
-        return response.data; // 추가된 댓글 데이터 반환
-    } catch (error) {
-        console.error("Error adding comment:", error);
-        throw error;
-    }
-};
 
-/** 댓글 목록 조회 */
-export const getCommentsAPI = async (bno) => {
-    try {
-        const response = await boardAxios.get(`/posts/${bno}/comments`);
-        return response.data; // 댓글 목록 반환
-    } catch (error) {
-        console.error("Error fetching comments:", error);
-        throw error;
-    }
-};
 
-/** 댓글 삭제 */
-export const deleteCommentAPI = async (bno, commentId) => {
-    try {
-        const response = await boardAxios.delete(`/posts/${bno}/comments/${commentId}`);
-        return response.data; // 삭제 결과 반환
-    } catch (error) {
-        console.error("Error deleting comment:", error);
-        throw error;
-    }
-};
 
-/** 댓글 수정 */
-export const updateCommentAPI = async (bno, commentId, updatedData) => {
-    try {
-        const response = await boardAxios.put(`/posts/${bno}/comments/${commentId}`, updatedData);
-        return response.data; // 업데이트된 댓글 데이터 반환
-    } catch (error) {
-        console.error("Error updating comment:", error);
-        throw error;
-    }
-};
+
+
+
+// /** 좋아요 */
+// export const likeBoardPostAPI = async (bno) => {
+//     try {
+//         const response = await boardAxios.post(`/posts/${bno}/like`);
+//         return response.data; // 좋아요 결과 반환
+//     } catch (error) {
+//         console.error("Error liking board post:", error);
+//         throw error;
+//     }
+// };
+
+
+// /** 좋아요 취소 */
+// export const unlikeBoardPostAPI = async (bno) => {
+//     try {
+//         const response = await boardAxios.post(`/posts/${bno}/unlike`);
+//         return response.data; // 좋아요 취소 결과 반환
+//     } catch (error) {
+//         console.error("Error unliking board post:", error);
+//         throw error;
+//     }
+// };
+
+// /** 댓글 추가 */
+// export const addCommentAPI = async (bno, commentData) => {
+//     try {
+//         const response = await boardAxios.post(`/posts/${bno}/comments`, commentData);
+//         return response.data; // 추가된 댓글 데이터 반환
+//     } catch (error) {
+//         console.error("Error adding comment:", error);
+//         throw error;
+//     }
+// };
+
+// /** 댓글 목록 조회 */
+// export const getCommentsAPI = async (bno) => {
+//     try {
+//         const response = await boardAxios.get(`/posts/${bno}/comments`);
+//         return response.data; // 댓글 목록 반환
+//     } catch (error) {
+//         console.error("Error fetching comments:", error);
+//         throw error;
+//     }
+// };
+
+// /** 댓글 삭제 */
+// export const deleteCommentAPI = async (bno, commentId) => {
+//     try {
+//         const response = await boardAxios.delete(`/posts/${bno}/comments/${commentId}`);
+//         return response.data; // 삭제 결과 반환
+//     } catch (error) {
+//         console.error("Error deleting comment:", error);
+//         throw error;
+//     }
+// };
+
+// /** 댓글 수정 */
+// export const updateCommentAPI = async (bno, commentId, updatedData) => {
+//     try {
+//         const response = await boardAxios.put(`/posts/${bno}/comments/${commentId}`, updatedData);
+//         return response.data; // 업데이트된 댓글 데이터 반환
+//     } catch (error) {
+//         console.error("Error updating comment:", error);
+//         throw error;
+//     }
+// };
 

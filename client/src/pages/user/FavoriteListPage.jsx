@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { getFavoritesAPI, deleteFavoriteAPI } from "@api/favorite/favoriteAPI";
+import ConfirmModal from "@components/DeleteModel";
 
 export default function FavoriteListPage() {
     const [favorites, setFavorites] = useState([]);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [favIdToDelete, setFavIdToDelete] = useState(null);
 
     // 즐겨찾기 목록 불러오기
     useEffect(() => {
@@ -14,15 +17,15 @@ export default function FavoriteListPage() {
     }, []);
 
     // 즐겨찾기 삭제
-    const handleDelete = async (favId) => {
-        if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
+    const handleDelete = async () => {
+        setShowConfirmModal(false); // 모달 닫기
+        if (!favIdToDelete) return alert("삭제할 즐겨찾기 ID가 없습니다.");
         try {
-            const res = await deleteFavoriteAPI(favId);
-
+            const res = await deleteFavoriteAPI(favIdToDelete);
             if (res.status === 200) {
                 // UI에서 즉시 제거
-                setFavorites((prev) => prev.filter((f) => f.favId !== favId));
+                console.log("##### 삭제 성공 // 삭제된 즐겨찾기 ID :: ", favIdToDelete);
+                setFavorites((prev) => prev.filter((f) => f.favId !== favIdToDelete));
             } else {
                 alert("삭제 실패. 다시 시도해주세요.");
             }
@@ -66,7 +69,11 @@ export default function FavoriteListPage() {
                                         Type: {fav.contentTypeId}
                                     </span>
                                     <button
-                                        onClick={() => handleDelete(fav.favId)}
+                                        // onClick={() => handleDelete(fav.favId)}
+                                        onClick={() => {
+                                            setShowConfirmModal(true)
+                                            setFavIdToDelete(fav.favId)
+                                        }}
                                         className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-lg hover:bg-red-200"
                                     >
                                         삭제
@@ -77,6 +84,16 @@ export default function FavoriteListPage() {
                     ))}
                 </div>
             )}
+
+            {showConfirmModal && (
+                <ConfirmModal
+                    onConfirm={handleDelete}
+                    onCancel={() => setShowConfirmModal(false)}
+                    title="관광지 즐겨찾기 삭제"
+                    message="관광지를 즐겨찾기에서 삭제하시겠습니까?"
+                />
+            )}
+
         </div>
     );
 }

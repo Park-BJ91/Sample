@@ -14,11 +14,16 @@ if (process.env.DB_TYPE === 'mariadb') {
         process.env.MARIADB_PASSWORD,
         {
             host: process.env.MARIADB_HOST,
+            dialect: process.env.MARIADB_DIALECT,
+            timezone: '+09:00', // 한국 표준시 설정
+            logging: false, // 쿼리 로깅 비활성화
+            dialectOptions: {
+                useUTC: false, // 로컬 타임존 사용
+            },
             define: {
                 freezeTableName: true, // 모델 이름을 테이블 이름으로 사용 (테이블 이름 복수형 변환 방지)
                 timestamps: true, // createdAt, updatedAt 자동 생성
             },
-            dialect: process.env.MARIADB_DIALECT,
             hooks: {
                 beforeCreate: (record) => {
                     record.updatedAt = null;
@@ -39,13 +44,18 @@ if (process.env.DB_TYPE === 'mariadb') {
         {
             host: process.env.MYSQL_HOST,
             dialect: process.env.MYSQL_DIALECT,
+            timezone: '+09:00', // 한국 표준시 설정
+            logging: false, // 쿼리 로깅 비활성화
+            dialectOptions: {
+                useUTC: false, // 로컬 타임존 사용
+            },
             define: {
                 freezeTableName: true, // 모델 이름을 테이블 이름으로 사용 (테이블 이름 복수형 변환 방지)
                 timestamps: true, // createdAt, updatedAt 자동 생성
-                hooks: {
-                    beforeCreate: (record) => {
-                        record.updatedAt = null;
-                    }
+            },
+            hooks: {
+                beforeCreate: (record) => {
+                    record.updatedAt = null;
                 }
             }
         });

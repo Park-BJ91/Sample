@@ -137,11 +137,14 @@ export default function MainSearch({
         else console.log("Search payload:", payload);
     }
 
+    /* bg-white shadow-md rounded-2xl p-4 grid grid-cols-1 md:grid-cols-3 gap-3 items-end */
+
+
 
     return (
         // <div className="max-w-3xl mx-auto p-4">
-        <div className="mx-60 p-4">
-            <div className="bg-white shadow-md rounded-2xl p-4 grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+        <div className="lg:mx-60 md:mx-40 p-4 mx-4">
+            <div className="search-div">
 
                 {/* City Select */}
                 <div className="md:col-span-1 relative">
